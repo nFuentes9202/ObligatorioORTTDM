@@ -12,14 +12,15 @@ function SetVariablesGlobales() {
 document.querySelector("#ruteo").addEventListener("ionRouteWillChange", mostrarPagina);
 
 function mostrarPagina(evento) {
+    console.log(evento);
     if(evento.detail.to == "/") {
-        pagHome.style.display = "block";
-        pagLogin.style.display = "none";
-        pagRegistro.style.display = "none";
-        pagAddPersona.style.display = "none";
-        pagListado.style.display = "none";
-        pagCensadosTotales.style.display = "none";
-        pagMapa.style.display = "none";
+        document.querySelector("#home").style.display = "block";
+        document.querySelector("#login").style.display = "none";
+        document.querySelector("#registro").style.display = "none";
+        document.querySelector("#agregarPersona").style.display = "none";
+        document.querySelector("#verPersonas").style.display = "none";
+        document.querySelector("#censadosTotales").style.display = "none";
+        document.querySelector("#verMapa").style.display = "none";
     }else if(evento.detail.to == "/login") {
         pagHome.style.display = "none";
         pagLogin.style.display = "block";
