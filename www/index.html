@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
     <script src="js/codigo.js" defer></script>
 </head>
+
 <body>
     <ion-app>
 
@@ -66,105 +68,124 @@
 
         </ion-menu>
 
-            <div id="main-content"></div>
-            <ion-page class="ion-page" id="home">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        ENCABEZADO HOME
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    PAGINA HOME
-                </ion-content>
-            </ion-page>
+        <div id="main-content"></div>
+        <ion-page class="ion-page" id="home">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    ENCABEZADO HOME
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                PAGINA HOME
+            </ion-content>
+        </ion-page>
 
-            <ion-page class="ion-page" id="login">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        ENCABEZADO LOGIN
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    PAGINA LOGIN
-                </ion-content>
-            </ion-page>
+        <ion-page class="ion-page" id="login">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    ENCABEZADO LOGIN
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                PAGINA LOGIN
+            </ion-content>
+        </ion-page>
 
-            <ion-page class="ion-page" id="registro">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        ENCABEZADO REGISTRO
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    PAGINA REGISTRO
-                </ion-content>
-            </ion-page>
+        <ion-page class="ion-page" id="registro">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    ENCABEZADO REGISTRO
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                PAGINA REGISTRO
+            </ion-content>
+        </ion-page>
 
-            <ion-page class="ion-page" id="agregarPersona">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        ENCABEZADO AGREGAR PERSONA
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    PAGINA AGREGAR PERSONA
-                </ion-content>
-            </ion-page>
+        <ion-page class="ion-page" id="agregarPersona">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    AGREGAR PERSONA CENSADA
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <div id="divAgregarPersona">
 
-            <ion-page class="ion-page" id="verPersonas">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        ENCABEZADO VER PERSONAS
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    PAGINA VER PERSONAS
-                </ion-content>
-            </ion-page>
+                    <ion-input label="Nombre" type="text" placeholder="Ej: Jane Doe" id="nombrePersonaAgregar"></ion-input>
+                    
+                    <select id="slcDepartamentoAgregarPersona">
+                        <option value="0">Seleccione un departamento</option>
+                    </select>
 
-            <ion-page class="ion-page" id="censadosTotales">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        ENCABEZADO CENSADOS TOTALES
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    PAGINA CENSADOS TOTALES
-                </ion-content>
-            </ion-page>
+                    <select id="slcCiudadAgregarPersona">
+                        <option value="0">Seleccione una ciudad</option>
+                    </select>
 
-            <ion-page class="ion-page" id="verMapa">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        ENCABEZADO VER MAPA
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content>
-                    PAGINA VER MAPA
-                </ion-content>
-            </ion-page>
-            
+                    <ion-datetime label="Fecha de nacimiento" id="fechaNacPersonaAgregar"></ion-datetime>
+
+                    <select id="slcOcupacionAgregarPersona">
+                        <option value="0">Seleccione una ocupación</option>
+                    </select>
+
+                    <ion-button id="btnAgregarPersona">Agregar Persona</ion-button>
+                    <p id="pErrorAgregarPersona"></p>
+            </ion-content>
+        </ion-page>
+
+        <ion-page class="ion-page" id="verPersonas">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    ENCABEZADO VER PERSONAS
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                PAGINA VER PERSONAS
+            </ion-content>
+        </ion-page>
+
+        <ion-page class="ion-page" id="censadosTotales">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    ENCABEZADO CENSADOS TOTALES
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                PAGINA CENSADOS TOTALES
+            </ion-content>
+        </ion-page>
+
+        <ion-page class="ion-page" id="verMapa">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    ENCABEZADO VER MAPA
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                PAGINA VER MAPA
+            </ion-content>
+        </ion-page>
     </ion-app>
 </body>
+
 </html>
