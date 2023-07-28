@@ -12,52 +12,12 @@ function SetVariablesGlobales() {
     let token;*/
     //inicializar();//inicializa la pagina
 }
-<<<<<<< HEAD
-
-/*function inicializar() {
-    Inicio(true);
-}
-
-function Inicio(showbuttons) {
-    OcultarDivs();
-    OcultarBotones(showbuttons);
-    AgregarEventos();
-}
-
-function OcultarDivs() {
-
-}
-
-function OcultarBotones(showbuttons) {
-    if (showbuttons) {
-        document.querySelector("#btnLogin").style.display = "inline";
-        document.querySelector("#btnRegistro").style.display = "inline";
-        document.querySelector("#btnLogout").style.display = "none";
-        document.querySelector("#btnAgregarPersona").style.display = "none";
-        document.querySelector("#btnVerPersonas").style.display = "none";
-        document.querySelector("#btnCensadosTotales").style.display = "none";
-        document.querySelector("#btnVerMapa").style.display = "none";
-    } else {
-        document.querySelector("#btnLogin").style.display = "none";
-        document.querySelector("#btnRegistro").style.display = "none";
-        document.querySelector("#btnLogout").style.display = "inline";
-        document.querySelector("#btnAgregarPersona").style.display = "inline";
-        document.querySelector("#btnVerPersonas").style.display = "inline";
-        document.querySelector("#btnCensadosTotales").style.display = "inline";
-        document.querySelector("#btnVerMapa").style.display = "inline";
-    }
-}*/
-
-let apiKey = "";
-document.querySelector("#ruteo").addEventListener("ionRouteWillChange", mostrarPagina);
-=======
 function EventListeners(){
     document.querySelector("#ruteo").addEventListener("ionRouteWillChange", mostrarPagina);
     document.querySelector("#btnRegistrar").addEventListener("click",RegistroUsuario);
     document.querySelector("#btnLogin").addEventListener("click",LoguearUsuario);
 }
 let hayUsuarioLogueado = false;
->>>>>>> 2e11b422bfffba1db08c1aa181687b592f091ad1
 
 function mostrarPagina(evento) {
     console.log(evento);
