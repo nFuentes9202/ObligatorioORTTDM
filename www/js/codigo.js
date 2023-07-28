@@ -1,5 +1,6 @@
-SetVariablesGlobales();
 EventListeners();
+SetVariablesGlobales();
+let hayUsuarioLogueado = false;
 function SetVariablesGlobales() {
     //pagHome = document.querySelector("#home");
     pagLogin = document.querySelector("#login");
@@ -8,147 +9,175 @@ function SetVariablesGlobales() {
     pagListado = document.querySelector("#verPersonas");
     pagCensadosTotales = document.querySelector("#censadosTotales");
     pagMapa = document.querySelector("#verMapa");
-    /*let hayUsuarioLogueado = false;
-    let token;*/
-    //inicializar();//inicializa la pagina
+    inicializar();//inicializa la pagina
 }
-function EventListeners(){
-    document.querySelector("#ruteo").addEventListener("ionRouteWillChange", mostrarPagina);
-    document.querySelector("#btnRegistrar").addEventListener("click",RegistroUsuario);
-    document.querySelector("#btnLogin").addEventListener("click",LoguearUsuario);
-    document.querySelector("#btnRedirectReg").addEventListener("click",RedirectLogin);
+/*SECCION INICIALIZAR*/
+function EventListeners() {
+    document.querySelector("#ruteo").addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
+    document.querySelector("#btnRegistrar").addEventListener("click", RegistroUsuario);
+    document.querySelector("#btnLogin").addEventListener("click", LoguearUsuario);
+    document.querySelector("#btnRedirectReg").addEventListener("click", RedirectLogin);
+}
 
+function inicializar() {
+    Inicio(true);
 }
-let hayUsuarioLogueado = false;
+function Inicio(showbuttons) {
+    mostrarPagina();
+    OcultarBotones(showbuttons);
+}
 
 function mostrarPagina(evento) {
-    console.log(evento);
+    console.log(evento.detail.to);//muestra la pagina a la que se dirige el to esta bien pero el from es null
     OcultarPaginas();
-    if(evento.detail.to == "/") {
+
+    if (evento.detail.to == "/") {
         pagLogin.style.display = "block";
-    }else if(evento.detail.to == "/login") {
+    } else if (evento.detail.to == "/login") {
         pagLogin.style.display = "block";
 
-    }else if(evento.detail.to == "/registro") {
+    } else if (evento.detail.to == "/registro") {
         pagRegistro.style.display = "block";
 
-    }else if(evento.detail.to == "/agregarPersona") {
+    } else if (evento.detail.to == "/agregarPersona") {
         pagAddPersona.style.display = "block";
 
-    }else if(evento.detail.to == "/verPersonas") {
+    } else if (evento.detail.to == "/verPersonas") {
         pagListado.style.display = "block";
 
-    }else if(evento.detail.to == "/censadosTotales") {
+    } else if (evento.detail.to == "/censadosTotales") {
         pagCensadosTotales.style.display = "block";
 
-    }else if(evento.detail.to == "/verMapa") {
+    } else if (evento.detail.to == "/verMapa") {
         pagMapa.style.display = "block";
     }
-
 }
-function OcultarPaginas(){
+function OcultarPaginas() {
     let paginas = document.querySelectorAll("ion-page");
-    for(let i=0;i<paginas.length;i++){
-        paginas[i].style.display="none";
+    for (let i = 0; i < paginas.length; i++) {
+        paginas[i].style.display = "none";
+    }
+}
+function OcultarBotones(showbuttons) {
+    if (showbuttons) {//si no hay logueado
+        document.querySelector("#btnIngreso").style.display = "inline";
+        document.querySelector("#btnRegistro").style.display = "inline";
+        //document.querySelector("#btnHome").style.display = "none";
+        document.querySelector("#btnAgregarPersona").style.display = "none";
+        document.querySelector("#btnVistaPersonas").style.display = "none";
+        document.querySelector("#btnCensadosTotales").style.display = "none";
+        document.querySelector("#btnVerMapa").style.display = "none";
+        document.querySelector("#btnLogout").style.display = "none";
+    } else {//si hay logueado
+        document.querySelector("#btnIngreso").style.display = "none";
+        document.querySelector("#btnRegistro").style.display = "none";
+        //document.querySelector("#btnHome").style.display = "block";
+        document.querySelector("#btnAgregarPersona").style.display = "block";
+        document.querySelector("#btnVistaPersonas").style.display = "block";
+        document.querySelector("#btnCensadosTotales").style.display = "block";
+        document.querySelector("#btnVerMapa").style.display = "block";
+        document.querySelector("#btnLogout").style.display = "block";
     }
 }
 
-function RedirectLogin(){
+/*SECCION LOGIN*/
+
+function RedirectLogin() {
     document.querySelector("#ruteo").push("/registro");
 }
 
-function CerrarMenu(){
+function CerrarMenu() {
     document.querySelector("#menu").close();
 }
-function RegistroUsuario(){
+function RegistroUsuario() {
     let nombre = document.querySelector("#txtUsuarioRegistro").value.trim();
     let password = document.querySelector("#txtPasswordRegistro").value.trim();
     document.querySelector("#txtRegistro").innerHTML = "";
     try {
-        if(nombre.length == 0 || password.length == 0){
+        if (nombre.length == 0 || password.length == 0) {
             throw new Error("Ingrese datos válidos");
         }
         datosUsuario = {
-            usuario:nombre,
-            password:password
+            usuario: nombre,
+            password: password
         }
         console.log(datosUsuario);
         fetch("https://censo.develotion.com/usuarios.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(datosUsuario)
-    })
-        .then(response => {
-            if(response.ok){
-                document.querySelector("#txtRegistro").innerHTML = "Se ha registrado exitosamente";
-                return response.json();
-            } else{
-                return Promise.reject(response);
-            }
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(datosUsuario)
         })
-        .then((data) => {
+            .then(response => {
+                if (response.ok) {
+                    document.querySelector("#txtRegistro").innerHTML = "Se ha registrado exitosamente";
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then((data) => {
 
-          })
-          .catch((error) => {
-            error.json().then((data) => {
-              document.querySelector("#txtRegistro").innerHTML = data.mensaje;
+            })
+            .catch((error) => {
+                error.json().then((data) => {
+                    document.querySelector("#txtRegistro").innerHTML = data.mensaje;
+                });
             });
-          });
     } catch (error) {
         document.querySelector("#txtRegistro").innerHTML = error.message
     }
 }
-function LimpiarCamposRegistro(){
+function LimpiarCamposRegistro() {
     document.querySelector("#txtUsuarioRegistro").value = "";
     document.querySelector("#txtPasswordRegistro").value = "";
 }
-function LoguearUsuario(){
+function LoguearUsuario() {
     let nombre = document.querySelector("#txtUsuarioLogin").value.trim();
     let password = document.querySelector("#txtPasswordLogin").value.trim();
     document.querySelector("#txtRegistro").innerHTML = "";
     try {
-        if(nombre.length == 0 || password.length == 0){
+        if (nombre.length == 0 || password.length == 0) {
             throw new Error("Ingrese datos válidos");
         }
         datosUsuario = {
-            usuario:nombre,
-            password:password
+            usuario: nombre,
+            password: password
         }
         fetch("https://censo.develotion.com/login.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(datosUsuario),
-    })
-        .then(response => {
-            if (response.status == 200) {
-                return response.json();
-            } else {
-                return Promise.reject(response);
-            }
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datosUsuario),
         })
-        .then(data => {
-            if (data.codigo != 200) {
-                throw new Error(`${data.mensaje}`)
-            }
-            document.querySelector("#txtLogin").innerHTML = "Login exitoso";
-            hayUsuarioLogueado = true;
-            localStorage.setItem("apiKey",apiKey);
-            localStorage.setItem("idUsuario",data.id);
-        })
-        .catch((error) => {
-            error.json().then((data) => {
-              document.querySelector("#txtLogin").innerHTML = data.mensaje;
-            });
-          })
-        .then(datosError =>{
-            if(datosError != undefined){
-                document.querySelector("#txtLogin").innerHTML = datosError.error;
-            }
-        })
+            .then(response => {
+                if (response.status == 200) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(data => {
+                if (data.codigo != 200) {
+                    throw new Error(`${data.mensaje}`)
+                }
+                document.querySelector("#txtLogin").innerHTML = "Login exitoso";
+                hayUsuarioLogueado = true;
+                localStorage.setItem("apiKey", apiKey);
+                localStorage.setItem("idUsuario", data.id);
+            })
+            .catch((error) => {
+                error.json().then((data) => {
+                    document.querySelector("#txtLogin").innerHTML = data.mensaje;
+                });
+            })
+            .then(datosError => {
+                if (datosError != undefined) {
+                    document.querySelector("#txtLogin").innerHTML = datosError.error;
+                }
+            })
     } catch (error) {
         document.querySelector("#txtLogin").innerHTML = error.message;
     }
