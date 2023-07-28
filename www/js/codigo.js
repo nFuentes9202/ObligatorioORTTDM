@@ -1,7 +1,7 @@
 SetVariablesGlobales();
 EventListeners();
 function SetVariablesGlobales() {
-    pagHome = document.querySelector("#home");
+    //pagHome = document.querySelector("#home");
     pagLogin = document.querySelector("#login");
     pagRegistro = document.querySelector("#registro");
     pagAddPersona = document.querySelector("#agregarPersona");
@@ -16,6 +16,8 @@ function EventListeners(){
     document.querySelector("#ruteo").addEventListener("ionRouteWillChange", mostrarPagina);
     document.querySelector("#btnRegistrar").addEventListener("click",RegistroUsuario);
     document.querySelector("#btnLogin").addEventListener("click",LoguearUsuario);
+    document.querySelector("#btnRedirectReg").addEventListener("click",RedirectLogin);
+
 }
 let hayUsuarioLogueado = false;
 
@@ -23,7 +25,7 @@ function mostrarPagina(evento) {
     console.log(evento);
     OcultarPaginas();
     if(evento.detail.to == "/") {
-        document.querySelector("#home").style.display = "block";
+        pagLogin.style.display = "block";
     }else if(evento.detail.to == "/login") {
         pagLogin.style.display = "block";
 
@@ -49,6 +51,10 @@ function OcultarPaginas(){
     for(let i=0;i<paginas.length;i++){
         paginas[i].style.display="none";
     }
+}
+
+function RedirectLogin(){
+    document.querySelector("#ruteo").push("/registro");
 }
 
 function CerrarMenu(){
