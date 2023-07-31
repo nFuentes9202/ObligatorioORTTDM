@@ -1,4 +1,87 @@
-EventListeners();
+let hayUsuarioLogueado = false;
+let token;
+const ruteo = document.querySelector("#ruteo");
+const menu = document.querySelector("#menu");
+const pagHome = document.querySelector("#home");
+const pagLogin = document.querySelector("#login");
+const pagRegistro = document.querySelector("#registro");
+const pagAddPersona = document.querySelector("#agregarPersona");
+const pagListado = document.querySelector("#verPersonas");
+const pagCensadosTotales = document.querySelector("#censadosTotales");
+const pagMapa = document.querySelector("#verMapa");
+inicializar();//inicializa la pagina
+
+function inicializar() {
+    Inicio(true);
+}
+
+function OcultarBotones(showbuttons) {
+    if (showbuttons) {//si no hay logueado
+        document.querySelector("#btnLogin").style.display = "inline";
+        document.querySelector("#btnRegistro").style.display = "inline";
+        document.querySelector("#btnAgregarPersona").style.display = "none";
+        document.querySelector("#btnVistaPersonas").style.display = "none";
+        document.querySelector("#btnCensadosTotales").style.display = "none";
+        document.querySelector("#btnVerMapa").style.display = "none";
+        document.querySelector("#btnLogout").style.display = "none";
+    } else {//si hay logueado
+        document.querySelector("#btnLogin").style.display = "none";
+        document.querySelector("#btnRegistro").style.display = "none";
+        document.querySelector("#btnAgregarPersona").style.display = "block";
+        document.querySelector("#btnVistaPersonas").style.display = "block";
+        document.querySelector("#btnCensadosTotales").style.display = "block";
+        document.querySelector("#btnVerMapa").style.display = "block";
+        document.querySelector("#btnLogout").style.display = "block";
+    }
+}
+
+function CerrarMenu() {
+    menu.close();
+}
+
+function EventListeners() {
+    document.querySelector("#btnRegistrar").addEventListener("click", RegistroUsuario);
+    document.querySelector("#btnLoguear").addEventListener("click", LoguearUsuario);
+    document.querySelector("#btnRedirectReg").addEventListener("click", RedirectARegistro);
+    ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
+}
+
+function mostrarPagina(evento) {
+    OcultarPaginas();
+    if (evento.detail.to == "/") {
+        pagLogin.style.display = "block";
+    } else if (evento.detail.to == "/login") {
+        pagLogin.style.display = "block";
+
+    } else if (evento.detail.to == "/registro") {
+        pagRegistro.style.display = "block";
+
+    } else if (evento.detail.to == "/agregarPersona") {
+        pagAddPersona.style.display = "block";
+
+    } else if (evento.detail.to == "/verPersonas") {
+        pagListado.style.display = "block";
+
+    } else if (evento.detail.to == "/censadosTotales") {
+        pagCensadosTotales.style.display = "block";
+
+    } else if (evento.detail.to == "/verMapa") {
+        pagMapa.style.display = "block";
+    }
+}
+
+function OcultarPaginas() {
+    let paginas = document.querySelectorAll("ion-page");
+    for (let i = 0; i < paginas.length; i++) {
+        paginas[i].style.display = "none";
+    }
+}
+
+function Inicio(showbuttons) {
+    OcultarBotones(showbuttons);
+    EventListeners();
+}
+/*EventListeners();
 SetVariablesGlobales();
 let hayUsuarioLogueado = false;
 function SetVariablesGlobales() {
@@ -10,15 +93,19 @@ function SetVariablesGlobales() {
     pagCensadosTotales = document.querySelector("#censadosTotales");
     pagMapa = document.querySelector("#verMapa");
     inicializar();//inicializa la pagina
+    const ruteo = document.querySelector("#ruteo");
 }
-/*SECCION INICIALIZAR*/
+/*SECCION INICIALIZAR
 function EventListeners() {
-    document.querySelector("#ruteo").addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
     document.querySelector("#btnRegistrar").addEventListener("click", RegistroUsuario);
     document.querySelector("#btnLogin").addEventListener("click", LoguearUsuario);
     document.querySelector("#btnRedirectReg").addEventListener("click", RedirectLogin);
+    ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
 }
 
+function CerrarMenu() {
+    menu.close();
+}
 function inicializar() {
     Inicio(true);
 }
@@ -28,9 +115,8 @@ function Inicio(showbuttons) {
 }
 
 function mostrarPagina(evento) {
-    console.log(evento.detail.to);//muestra la pagina a la que se dirige el to esta bien pero el from es null
+    //console.log(evento.detail.to.toString());//muestra la pagina a la que se dirige el to esta bien pero el from es null
     OcultarPaginas();
-
     if (evento.detail.to == "/") {
         pagLogin.style.display = "block";
     } else if (evento.detail.to == "/login") {
@@ -60,83 +146,30 @@ function OcultarPaginas() {
 }
 function OcultarBotones(showbuttons) {
     if (showbuttons) {//si no hay logueado
-        document.querySelector("#btnIngreso").style.display = "inline";
+        document.querySelector("#btnLogin").style.display = "inline";
         document.querySelector("#btnRegistro").style.display = "inline";
-        //document.querySelector("#btnHome").style.display = "none";
         document.querySelector("#btnAgregarPersona").style.display = "none";
         document.querySelector("#btnVistaPersonas").style.display = "none";
         document.querySelector("#btnCensadosTotales").style.display = "none";
         document.querySelector("#btnVerMapa").style.display = "none";
         document.querySelector("#btnLogout").style.display = "none";
     } else {//si hay logueado
-        document.querySelector("#btnIngreso").style.display = "none";
+        document.querySelector("#btnLogin").style.display = "none";
         document.querySelector("#btnRegistro").style.display = "none";
-        //document.querySelector("#btnHome").style.display = "block";
         document.querySelector("#btnAgregarPersona").style.display = "block";
         document.querySelector("#btnVistaPersonas").style.display = "block";
         document.querySelector("#btnCensadosTotales").style.display = "block";
         document.querySelector("#btnVerMapa").style.display = "block";
         document.querySelector("#btnLogout").style.display = "block";
     }
-}
+}*/
 
-/*SECCION LOGIN*/
-
-function RedirectLogin() {
-    document.querySelector("#ruteo").push("/registro");
-}
-
-function CerrarMenu() {
-    document.querySelector("#menu").close();
-}
-function RegistroUsuario() {
-    let nombre = document.querySelector("#txtUsuarioRegistro").value.trim();
-    let password = document.querySelector("#txtPasswordRegistro").value.trim();
-    document.querySelector("#txtRegistro").innerHTML = "";
-    try {
-        if (nombre.length == 0 || password.length == 0) {
-            throw new Error("Ingrese datos válidos");
-        }
-        datosUsuario = {
-            usuario: nombre,
-            password: password
-        }
-        console.log(datosUsuario);
-        fetch("https://censo.develotion.com/usuarios.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(datosUsuario)
-        })
-            .then(response => {
-                if (response.ok) {
-                    document.querySelector("#txtRegistro").innerHTML = "Se ha registrado exitosamente";
-                    return response.json();
-                } else {
-                    return Promise.reject(response);
-                }
-            })
-            .then((data) => {
-
-            })
-            .catch((error) => {
-                error.json().then((data) => {
-                    document.querySelector("#txtRegistro").innerHTML = data.mensaje;
-                });
-            });
-    } catch (error) {
-        document.querySelector("#txtRegistro").innerHTML = error.message
-    }
-}
-function LimpiarCamposRegistro() {
-    document.querySelector("#txtUsuarioRegistro").value = "";
-    document.querySelector("#txtPasswordRegistro").value = "";
-}
+/*SECCION REGISTRO LOGIN Y LOGOUT*/
 function LoguearUsuario() {
+    console.log("LoguearUsuario");
     let nombre = document.querySelector("#txtUsuarioLogin").value.trim();
     let password = document.querySelector("#txtPasswordLogin").value.trim();
-    document.querySelector("#txtRegistro").innerHTML = "";
+    document.querySelector("#txtLogin").innerHTML = "";
     try {
         if (nombre.length == 0 || password.length == 0) {
             throw new Error("Ingrese datos válidos");
@@ -165,8 +198,11 @@ function LoguearUsuario() {
                 }
                 document.querySelector("#txtLogin").innerHTML = "Login exitoso";
                 hayUsuarioLogueado = true;
-                localStorage.setItem("apiKey", apiKey);
+                localStorage.setItem("apiKey", data.apiKey);//creo que aca es data.data.token
                 localStorage.setItem("idUsuario", data.id);
+                Inicio(true);
+                OcultarBotones(false);
+                ruteo.push("/agregarPersona");
             })
             .catch((error) => {
                 error.json().then((data) => {
@@ -187,6 +223,55 @@ function CerrarSesion() {
     document.querySelector("#btnCerrarSesion").style.display = "none";
     Inicio(true);*/
 }
+function RedirectARegistro() {
+    document.querySelector("#ruteo").push("/registro");
+}
+function RegistroUsuario() {//registra un usuario
+    let nombre = document.querySelector("#txtUsuarioRegistro").value.trim();//trim saca los espacios en blanco
+    let password = document.querySelector("#txtPasswordRegistro").value.trim();//trim saca los espacios en blanco
+    document.querySelector("#txtRegistro").innerHTML = "";//limpia el mensaje de error
+    try {//valida los datos
+        if (nombre.length == 0 || password.length == 0) {//si no ingreso datos
+            throw new Error("Ingrese datos válidos");//lanza el error
+        }
+        datosUsuario = {//crea el objeto
+            usuario: nombre,//le asigna los valores
+            password: password//le asigna los valores
+        }
+        fetch("https://censo.develotion.com/usuarios.php",
+            {//hace el fetch
+                method: "POST",//metodo post
+                headers: {//le asigna los headers
+                    "Content-Type": "application/json",//le asigna el tipo de contenido
+                },
+                body: JSON.stringify(datosUsuario)//le asigna el body
+            })
+            .then(response => {
+                if (response.ok) {//si la respuesta es ok
+                    document.querySelector("#txtRegistro").innerHTML = "Se ha registrado exitosamente";//muestra el mensaje
+                    return response.json();//devuelve la respuesta
+                    //return LimpiarCamposRegistro();//limpia los campos
+                } else {//si no es ok
+                    return Promise.reject(response);//devuelve el error
+                }
+            })
+            .then((data) => {//segun la respuesta
+
+            })
+            .catch((error) => {//si hay error
+                error.json().then((data) => {//lo muestra
+                    document.querySelector("#txtRegistro").innerHTML = data.mensaje;//muestra el mensaje
+                });
+            });
+    } catch (error) {//si hay error
+        document.querySelector("#txtRegistro").innerHTML = error.message//muestra el mensaje
+    }
+}
+function LimpiarCamposRegistro() {
+    document.querySelector("#txtUsuarioRegistro").value = "";
+    document.querySelector("#txtPasswordRegistro").value = "";
+}
+
 
 /*SECCION AGREGAR PERSONA*/
 
