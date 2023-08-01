@@ -43,6 +43,10 @@ function EventListeners() {
     document.querySelector("#btnRegistrar").addEventListener("click", RegistroUsuario);
     document.querySelector("#btnLoguear").addEventListener("click", LoguearUsuario);
     document.querySelector("#btnRedirectReg").addEventListener("click", RedirectARegistro);
+    document.querySelector("#slcDepartamentoAgregarPersona").addEventListener("change", CargarCiudadesSlc);
+    document.querySelector("#fechaNacPersonaAgregar").addEventListener("ionChange", CargarOcupacionesSlc);
+    document.querySelector("#btnAgregarPersonaAPI").addEventListener("click", CrearPersonaAgregar);
+    document.querySelector("#btnLogout").addEventListener("click", CerrarSesion);
     ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
 }
 
@@ -57,6 +61,7 @@ function mostrarPagina(evento) {
         pagRegistro.style.display = "block";
 
     } else if (evento.detail.to == "/agregarPersona") {
+        CargarDepartamentosSlc();
         pagAddPersona.style.display = "block";
 
     } else if (evento.detail.to == "/verPersonas") {
@@ -198,7 +203,7 @@ function LoguearUsuario() {
                 }
                 document.querySelector("#txtLogin").innerHTML = "Login exitoso";
                 hayUsuarioLogueado = true;
-                localStorage.setItem("apiKey", data.apiKey);//creo que aca es data.data.token
+                localStorage.setItem("apiKey", data.apiKey);
                 localStorage.setItem("idUsuario", data.id);
                 Inicio(true);
                 OcultarBotones(false);
@@ -219,9 +224,10 @@ function LoguearUsuario() {
     }
 }
 function CerrarSesion() {
-    /*hayUsuarioLogueado = false;
-    document.querySelector("#btnCerrarSesion").style.display = "none";
-    Inicio(true);*/
+    hayUsuarioLogueado = false;
+    document.querySelector("#btnLogout").style.display = "none";
+    localStorage.clear();
+    Inicio(true);
 }
 function RedirectARegistro() {
     document.querySelector("#ruteo").push("/registro");
@@ -272,17 +278,19 @@ function LimpiarCamposRegistro() {
     document.querySelector("#txtPasswordRegistro").value = "";
 }
 
-
 /*SECCION AGREGAR PERSONA*/
 
 function CargarDepartamentosSlc() {
     if (localStorage.getItem("token") != null) {
+        const apiKey = localStorage.getItem("apiKey");
+        const idUsuario = localStorage.getItem("idUsuario");
 
         fetch("https://censo.develotion.com/departamentos.php", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "x-auth": "32f49d4aa829da944dc6ccd7f53380de"//apiKey
+                "apikey": apiKey,
+                "iduser": idUsuario
             }
         })
             .then(function (response) {//response es la respuesta del servidor
@@ -297,10 +305,11 @@ function CargarDepartamentosSlc() {
             })
             .then(function (datosRespuesta) {
                 let data = "";//crea una variable vacia
-                for (let i = 0; i < datosRespuesta.data.length; i++) {//recorre el array de departamentos
-                    data += `<option value="${datosRespuesta.data[i].id}">${datosRespuesta.data[i].nombre}</option>`;//le asigna el nombre del departamento
+                data+= `<option value="0">Seleccione un departamento</option>`;//le asigna el valor
+                for (let i = 0; i < datosRespuesta.departamentos.length; i++) {//recorre el array de departamentos
+                    data += `<option value="${datosRespuesta.departamentos[i].id}">${datosRespuesta.departamentos[i].nombre}</option>`;//le asigna el nombre del departamento
                 }
-                document.querySelector("slcDepartamentoAgregarPersona").innerHTML = data;//lo agrega al select
+                document.querySelector("#slcDepartamentoAgregarPersona").innerHTML = data;//lo agrega al select
             })
             .catch(function (error) {//si hay error, lo muestra
                 document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
@@ -309,12 +318,15 @@ function CargarDepartamentosSlc() {
 }
 function CargarCiudadesSlc() {
     if (localStorage.getItem("token") != null) {
-
-        fetch("https://censo.develotion.com/ciudades.php", {
+        const apiKey = localStorage.getItem("apiKey");
+        const idUsuario = localStorage.getItem("idUsuario");
+        const idDepartamento = document.querySelector("#slcDepartamentoAgregarPersona").value;
+        fetch(`https://censo.develotion.com/ciudades.php?idDepartamento=${idDepartamento}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "x-auth": "32f49d4aa829da944dc6ccd7f53380de"//apiKey
+                "apikey": apiKey,//le asigna el apikey
+                "iduser": idUsuario//le asigna el id del usuario
             }
         })
             .then(function (response) {//response es la respuesta del servidor
@@ -329,54 +341,105 @@ function CargarCiudadesSlc() {
             })
             .then(function (datosRespuesta) {
                 let data = "";//crea una variable vacia
-                for (let i = 0; i < datosRespuesta.data.length; i++) {//recorre el array de departamentos
-                    if (datosRespuesta.data[i].idDepartamento == document.querySelector("#slcDepartamentoAgregarPersona").value) {//si el id del departamento es igual al id del departamento del select
-                        data += `<option value="${datosRespuesta.data[i].id}">${datosRespuesta.data[i].nombre}</option>`;//le asigna el nombre del departamento
-                    }
+                data+= `<option value="0">Seleccione una ciudad</option>`;//le asigna el valor
+                for (let i = 0; i < datosRespuesta.ciudades.length; i++) {//recorre el array de ciudades
+                    data += `<option value="${datosRespuesta.ciudades[i].id}">${datosRespuesta.ciudades[i].nombre}</option>`;//le asigna el nombre de la ciudad
                 }
-                document.querySelector("slcDepartamentoAgregarPersona").innerHTML = data;//lo agrega al select
+                document.querySelector("#slcCiudadAgregarPersona").innerHTML = data;//lo agrega al select
             })
             .catch(function (error) {//si hay error, lo muestra
                 document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
             })
     }
 }
-
 function CargarOcupacionesSlc() {
+    if (localStorage.getItem("token") != null) {
+        const apiKey = localStorage.getItem("apiKey");
+        const idUsuario = localStorage.getItem("idUsuario");
+        const fechaNac = document.querySelector("#fechaNacPersonaAgregar").value;
 
+        const currentDate = new Date();//toma la fecha actual
+        const fechaNacimiento = new Date(fechaNac);//toma la fecha de nacimiento
+        const edad = currentDate.getFullYear() - fechaNacimiento.getFullYear();//calcula la edad
+
+        fetch("https://censo.develotion.com/ocupaciones.php", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": apiKey,//le asigna el apikey
+                "iduser": idUsuario//le asigna el id del usuario
+            }
+        })
+            .then(function (response) {//response es la respuesta del servidor
+                if (response.ok) {//si la respuesta es correcta
+                    return response.json();//retorna la respuesta en formato json
+                } else if (response.status == 401) {//si la respuesta es incorrecta
+                    alert("Es necesario volver a loguearse");//tira un alert
+                    ruteo.push("/");//redirecciona al home
+                } else {//si la respuesta es incorrecta
+                    return Promise.reject(response);//tira el error
+                }
+            })
+            .then(function (datosRespuesta) {
+                let data = "";//crea una variable vacia
+                data+= `<option value="0">Seleccione una ocupacion</option>`;//le asigna el valor
+
+                for (let i = 0; i < datosRespuesta.ocupaciones.length; i++) {//recorre el array de ciudades
+                    if(edad<18 && datosRespuesta.ocupaciones[i].id==5){//si es menor de edad y la ocupacion es estudiante
+                        data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;//le asigna el nombre de la ocupacion
+                    }else if(edad>=18){
+                        data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;//le asigna el nombre de la ocupacion
+                    }
+                }
+                document.querySelector("#slcOcupacionAgregarPersona").innerHTML = data;//lo agrega al select
+            })
+            .catch(function (error) {//si hay error, lo muestra
+                document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
+            })
+    }
 }
-
-document.querySelector("#btnAgregarPersona").addEventListener("click", CrearPersonaAgregar);
-
 function CrearPersonaAgregar() {
-    let ocupacionSelect = document.querySelector("#slcOcupacionAgregarPersona").value;//toma el valor del select
+    let idUsuario = localStorage.getItem("idUsuario");
 
     let nombre = document.querySelector("#nombrePersonaAgregar").value;//toma el valor del input
-    let departamento = document.querySelector("#departamentoPersonaAgregar").value;//toma el valor del input
+    let departamento = document.querySelector("#slcDepartamentoAgregarPersona").value;//toma el valor del input
     let ciudad = document.querySelector("#slcCiudadAgregarPersona").value;//toma el valor del input
     let fechaNacimiento = document.querySelector("#fechaNacPersonaAgregar").value;//toma el valor del input
-    let ocupacion = ocupacionSelect.value;//toma el valor del select
+    let ocupacion = document.querySelector("#slcOcupacionAgregarPersona").value;;//toma el valor del select
 
-    let edad = CalcularEdad(fechaNacimiento);//calcula la edad
-
-    if (edad < 18) {//si es menor de 18 años
-        ocupacionSelect.value = 5;//le asigna el valor 5
-        ocupacionSelect.setAttribute("disabled", "disabled");//lo deshabilita
-    } else {//si es mayor de 18 años
-        ocupacionSelect.removeAttribute("disabled");//lo habilita y guarda id
-    }
-
-    let datosPersona = new Persona(nombre, departamento, ciudad, fechaNacimiento, ocupacion);//crea un objeto persona
+    let datosPersona = new Persona(idUsuario, nombre, departamento, ciudad, fechaNacimiento, ocupacion);//crea un objeto persona
     AgregarPersonaAPI(datosPersona);//lo agrega a la api
 }
 
-function CalcularEdad(fechaNacimiento) {
-    let fNac = new Date(fechaNacimiento);
-    let fActual = new Date();
-    let edad = fActual.getFullYear() - fNac.getFullYear();
-    return edad;
-}
-
 function AgregarPersonaAPI(datosPersona) {
+    if (localStorage.getItem("token") != null) {
+        const apiKey = localStorage.getItem("apiKey");
+        const idUsuario = localStorage.getItem("idUsuario");
 
+        fetch("https://censo.develotion.com/personas.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": apiKey,
+                "iduser": idUsuario
+            },
+            body: JSON.stringify(datosPersona)
+        })
+            .then(function (response) {//response es la respuesta del servidor
+                if (response.ok) {//si la respuesta es correcta
+                    return response.json();//retorna la respuesta en formato json
+                } else if (response.status == 401) {//si la respuesta es incorrecta
+                    alert("Es necesario volver a loguearse");//tira un alert
+                    ruteo.push("/");//redirecciona al home
+                } else {//si la respuesta es incorrecta
+                    return Promise.reject(response);//tira el error
+                }
+            })
+            .then(function (datosPersona) {
+                document.querySelector("#pErrorAgregarPersona").innerHTML = "¡Persona agregada con exito!";//muestra el error
+            })
+            .catch(function (error) {//si hay error, lo muestra
+                document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
+            })
+    }
 }

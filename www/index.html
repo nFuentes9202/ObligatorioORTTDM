@@ -8,6 +8,7 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <script src="js/Persona.js"></script>
     <script src="js/codigo.js" defer></script>
 </head>
 
@@ -16,7 +17,6 @@
 
         <ion-router id="ruteo">
             <ion-route url="/" component="login"></ion-route>
-            <!--<ion-route url="/login" component="login"></ion-route>-->
             <ion-route url="/registro" component="registro"></ion-route>
             <ion-route url="/agregarPersona" component="agregarPersona"></ion-route>
             <ion-route url="/verPersonas" component="verPersonas"></ion-route>
@@ -69,77 +69,66 @@
 
         </ion-menu>
 
-            <div id="main-content"></div>
-            <!--<ion-page class="ion-page" id="home">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        HOME
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content class="content-center">
-                    <div class="centered-content">
-                        <h2>PAGINA HOME</h2>
-                    </div>
-                </ion-content>
-            </ion-page>-->
-            <ion-page class="ion-page" id="login" class="flexbox">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        LOGIN
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content class="content-center">
-                    <div class="centered-content">
-                        <h2>Inicie sesión</h2>
-                        <ion-list class="input-style">
-                            <ion-item>
-                                <ion-input label="Usuario" placeholder="Ingrese su usuario" id="txtUsuarioLogin" label-placement="floating"></ion-input>
-                            </ion-item>
-                            <ion-item>
-                                <ion-input label="Contraseña" placeholder="Ingrese su contraseña" type="password" id="txtPasswordLogin" label-placement="floating"></ion-input>
-                            </ion-item>
-                        </ion-list>
-                        <ion-button shape="round" id="btnLoguear">Loguearse</ion-button><br>
-                        <h6>¿No tiene un usuario?</h6>
-                        <ion-button shape="round" id="btnRedirectReg" fill ="clear">Registrarse</ion-button>
-                        <ion-text color="primary" id="txtLogin"></ion-text>
-                    </div>
-                </ion-content>
-            </ion-page>
+        <div id="main-content"></div>
+        <ion-page class="ion-page" id="login" class="flexbox">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    LOGIN
+                </ion-toolbar>
+            </ion-header>
+            <ion-content class="content-center">
+                <div class="centered-content">
+                    <h2>Inicie sesión</h2>
+                    <ion-list class="input-style">
+                        <ion-item>
+                            <ion-input label="Usuario" placeholder="Ingrese su usuario" id="txtUsuarioLogin"
+                                label-placement="floating"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input label="Contraseña" placeholder="Ingrese su contraseña" type="password"
+                                id="txtPasswordLogin" label-placement="floating"></ion-input>
+                        </ion-item>
+                    </ion-list>
+                    <ion-button shape="round" id="btnLoguear">Loguearse</ion-button><br>
+                    <h6>¿No tiene un usuario?</h6>
+                    <ion-button shape="round" id="btnRedirectReg" fill="clear">Registrarse</ion-button>
+                    <ion-text color="primary" id="txtLogin"></ion-text>
+                </div>
+            </ion-content>
+        </ion-page>
 
-            <ion-page class="ion-page" id="registro" class="flexbox">
-                <ion-header>
-                    <ion-toolbar>
-                        <ion-buttons slot="start">
-                            <ion-menu-button></ion-menu-button>
-                        </ion-buttons>
-                        REGISTRO
-                    </ion-toolbar>
-                </ion-header>
-                <ion-content class="content-center">
-                    <div class="centered-content">
-                        <h2>PAGINA REGISTRO</h2>
-                        <ion-list class="input-style">
-                            <ion-item>
-                                <ion-input label="Usuario" placeholder="Ingrese su usuario" id="txtUsuarioRegistro" label-placement="floating"></ion-input>
-                            </ion-item>
-                            <ion-item>
-                                <ion-input label="Contraseña" placeholder="Ingrese su contraseña" type="password" id="txtPasswordRegistro" label-placement="floating"></ion-input>
-                            </ion-item>
-                        </ion-list>
-                        <ion-button shape="round" id="btnRegistrar">Registrarse</ion-button>
-                        <ion-text color="primary" id="txtRegistro"></ion-text>
-                    </div>
-                </ion-content>
-            </ion-page>
+        <ion-page class="ion-page" id="registro" class="flexbox">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    REGISTRO
+                </ion-toolbar>
+            </ion-header>
+            <ion-content class="content-center">
+                <div class="centered-content">
+                    <h2>PAGINA REGISTRO</h2>
+                    <ion-list class="input-style">
+                        <ion-item>
+                            <ion-input label="Usuario" placeholder="Ingrese su usuario" id="txtUsuarioRegistro"
+                                label-placement="floating"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input label="Contraseña" placeholder="Ingrese su contraseña" type="password"
+                                id="txtPasswordRegistro" label-placement="floating"></ion-input>
+                        </ion-item>
+                    </ion-list>
+                    <ion-button shape="round" id="btnRegistrar">Registrarse</ion-button>
+                    <ion-text color="primary" id="txtRegistro"></ion-text>
+                </div>
+            </ion-content>
+        </ion-page>
 
-        <ion-page class="ion-page" id="agregarPersona">
+        <ion-page class="ion-page" id="agregarPersona" class="flexbox">
             <ion-header>
                 <ion-toolbar>
                     <ion-buttons slot="start">
@@ -148,27 +137,37 @@
                     AGREGAR PERSONA CENSADA
                 </ion-toolbar>
             </ion-header>
-            <ion-content>
-                <div id="divAgregarPersona">
+            <ion-content class="content-center">
 
-                    <ion-input label="Nombre" type="text" placeholder="Ej: Jane Doe" id="nombrePersonaAgregar"></ion-input>
-                    
-                    <select id="slcDepartamentoAgregarPersona">
-                        <option value="0">Seleccione un departamento</option>
-                    </select>
+                <div id="divAgregarPersona" class="centered-content">
+                    <h2>AGREGAR PERSONA CENSADA</h2>
+                    <ion-list class="input-styleAddP">
+                        <ion-item>
+                            <ion-input label="Nombre" type="text" placeholder="Ej: Jane Doe"
+                                id="nombrePersonaAgregar" label-placement="floating"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <select id="slcDepartamentoAgregarPersona">
+                            </select>
+                        </ion-item>
+                        <ion-item>
+                            <select id="slcCiudadAgregarPersona">
+                                <option value="0">Seleccione una ciudad</option>
+                            </select>
+                        </ion-item>
+                        <ion-item>
+                            <ion-datetime label="Fecha de nacimiento" id="fechaNacPersonaAgregar"></ion-datetime>
+                        </ion-item>
+                        <ion-item>
+                            <select id="slcOcupacionAgregarPersona">
+                                <option value="0">Seleccione una ocupación</option>
+                            </select>
+                        </ion-item>
+                    </ion-list>
 
-                    <select id="slcCiudadAgregarPersona">
-                        <option value="0">Seleccione una ciudad</option>
-                    </select>
-
-                    <ion-datetime label="Fecha de nacimiento" id="fechaNacPersonaAgregar"></ion-datetime>
-
-                    <select id="slcOcupacionAgregarPersona">
-                        <option value="0">Seleccione una ocupación</option>
-                    </select>
-
-                    <ion-button id="btnAgregarPersona">Agregar Persona</ion-button>
+                    <ion-button id="btnAgregarPersonaAPI">Agregar Persona</ion-button>
                     <p id="pErrorAgregarPersona"></p>
+                </div>
             </ion-content>
         </ion-page>
 
