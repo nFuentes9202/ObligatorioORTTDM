@@ -1,10 +1,5 @@
 let hayUsuarioLogueado;
 
-if(localStorage.getItem("idUsuario") != null){
-    hayUsuarioLogueado = true;
-} else{
-    hayUsuarioLogueado = false;
-}
 let token;
 const ruteo = document.querySelector("#ruteo");
 const menu = document.querySelector("#menu");
@@ -15,14 +10,27 @@ const pagAddPersona = document.querySelector("#agregarPersona");
 const pagListado = document.querySelector("#verPersonas");
 const pagCensadosTotales = document.querySelector("#censadosTotales");
 const pagMapa = document.querySelector("#verMapa");
-inicializar();//inicializa la pagina
-
+if(localStorage.getItem("idUsuario") != null){
+    hayUsuarioLogueado = true;
+} else{
+    hayUsuarioLogueado = false;
+}
+inicializar(hayUsuarioLogueado);//inicializa la pagina
 function inicializar(hayUsuarioLogueado) {
+    
     Inicio(hayUsuarioLogueado);
 }
-
-function OcultarBotones(showbuttons) {
-    if (showbuttons) {//si no hay logueado
+function Inicio(hayUsuarioLogueado) {
+    OcultarBotones(hayUsuarioLogueado);
+    EventListeners();
+    if(hayUsuarioLogueado){
+        ruteo.push("/agregarPersona")
+    } else{
+        ruteo.push("/")
+    }
+}
+function OcultarBotones(hayUsuarioLogueado) {
+    if (!hayUsuarioLogueado) {//si no hay logueado
         document.querySelector("#btnLogin").style.display = "inline";
         document.querySelector("#btnRegistro").style.display = "inline";
         document.querySelector("#btnAgregarPersona").style.display = "none";
@@ -65,7 +73,7 @@ function mostrarPagina(evento) {
 
     } else if (evento.detail.to == "/registro") {
         pagRegistro.style.display = "block";
-
+        LimpiarCamposRegistro();
     } else if (evento.detail.to == "/agregarPersona") {
         CargarDepartamentosSlc();
         pagAddPersona.style.display = "block";
@@ -88,10 +96,7 @@ function OcultarPaginas() {
     }
 }
 
-function Inicio(showbuttons) {
-    OcultarBotones(showbuttons);
-    EventListeners();
-}
+
 /*EventListeners();
 SetVariablesGlobales();
 let hayUsuarioLogueado = false;
@@ -211,7 +216,7 @@ function LoguearUsuario() {
                 localStorage.setItem("apiKey", data.apiKey);
                 localStorage.setItem("idUsuario", data.id);
                 Inicio(true);
-                OcultarBotones(false);
+                OcultarBotones(true);
                 ruteo.push("/agregarPersona");
             })
             .catch((error) => {
@@ -233,6 +238,7 @@ function CerrarSesion() {
     document.querySelector("#btnLogout").style.display = "none";
     localStorage.clear();
     Inicio(true);
+    OcultarBotones(false);
     document.querySelector("#ruteo").push("/")
 }
 function RedirectARegistro() {
