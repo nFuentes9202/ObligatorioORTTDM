@@ -1,4 +1,10 @@
-let hayUsuarioLogueado = false;
+let hayUsuarioLogueado;
+
+if(localStorage.getItem("idUsuario") != null){
+    hayUsuarioLogueado = true;
+} else{
+    hayUsuarioLogueado = false;
+}
 let token;
 const ruteo = document.querySelector("#ruteo");
 const menu = document.querySelector("#menu");
@@ -11,8 +17,8 @@ const pagCensadosTotales = document.querySelector("#censadosTotales");
 const pagMapa = document.querySelector("#verMapa");
 inicializar();//inicializa la pagina
 
-function inicializar() {
-    Inicio(true);
+function inicializar(hayUsuarioLogueado) {
+    Inicio(hayUsuarioLogueado);
 }
 
 function OcultarBotones(showbuttons) {
@@ -171,7 +177,6 @@ function OcultarBotones(showbuttons) {
 
 /*SECCION REGISTRO LOGIN Y LOGOUT*/
 function LoguearUsuario() {
-    console.log("LoguearUsuario");
     let nombre = document.querySelector("#txtUsuarioLogin").value.trim();
     let password = document.querySelector("#txtPasswordLogin").value.trim();
     document.querySelector("#txtLogin").innerHTML = "";
@@ -228,6 +233,7 @@ function CerrarSesion() {
     document.querySelector("#btnLogout").style.display = "none";
     localStorage.clear();
     Inicio(true);
+    document.querySelector("#ruteo").push("/")
 }
 function RedirectARegistro() {
     document.querySelector("#ruteo").push("/registro");
