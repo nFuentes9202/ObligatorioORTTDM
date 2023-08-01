@@ -293,7 +293,7 @@ function LimpiarCamposRegistro() {
 /*SECCION AGREGAR PERSONA*/
 
 function CargarDepartamentosSlc() {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem("apiKey") != null) {
         const apiKey = localStorage.getItem("apiKey");
         const idUsuario = localStorage.getItem("idUsuario");
 
@@ -329,7 +329,7 @@ function CargarDepartamentosSlc() {
     }
 }
 function CargarCiudadesSlc() {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem("apiKey") != null) {
         const apiKey = localStorage.getItem("apiKey");
         const idUsuario = localStorage.getItem("idUsuario");
         const idDepartamento = document.querySelector("#slcDepartamentoAgregarPersona").value;
@@ -365,7 +365,7 @@ function CargarCiudadesSlc() {
     }
 }
 function CargarOcupacionesSlc() {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem("apiKey") != null) {
         const apiKey = localStorage.getItem("apiKey");
         const idUsuario = localStorage.getItem("idUsuario");
         const fechaNac = document.querySelector("#fechaNacPersonaAgregar").value;
