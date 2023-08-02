@@ -540,7 +540,7 @@ function ListarPersonas(){
                     data += `<ion-button fill="clear" onclick=EliminarDatos('${datosRespuesta.personas[i]._id}')>Eliminar</ion-button>`;
                     data += `</ion-card-content></ion-card>`;
                 }
-                document.querySelector("#content-personas").innerHTML = data;
+                document.querySelector("#divVerPersonas").innerHTML = data;
             })
             .catch(function (error) {
                 document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar

@@ -50,7 +50,7 @@
                     </ion-item>
                     <ion-item href="/verPersonas" onclick="CerrarMenu()" id="btnVistaPersonas">
                         <ion-icon name="people-outline"></ion-icon>
-                        <ion-label>Ver Personas</ion-label>
+                        <ion-label>Personas censadas</ion-label>
                     </ion-item>
                     <ion-item href="/censadosTotales" onclick="CerrarMenu()" id="btnCensadosTotales">
                         <ion-icon name="people-outline"></ion-icon>
@@ -143,8 +143,8 @@
                     <h2>AGREGAR PERSONA CENSADA</h2>
                     <ion-list class="input-styleAddP">
                         <ion-item>
-                            <ion-input label="Nombre" type="text" placeholder="Ej: Jane Doe"
-                                id="nombrePersonaAgregar" label-placement="floating"></ion-input>
+                            <ion-input label="Nombre" type="text" placeholder="Ej: Jane Doe" id="nombrePersonaAgregar"
+                                label-placement="floating"></ion-input>
                         </ion-item>
                         <ion-item>
                             <select id="slcDepartamentoAgregarPersona">
@@ -171,17 +171,19 @@
             </ion-content>
         </ion-page>
 
-        <ion-page class="ion-page" id="verPersonas">
+        <ion-page class="ion-page" id="verPersonas" class="flexbox">
             <ion-header>
                 <ion-toolbar>
                     <ion-buttons slot="start">
                         <ion-menu-button></ion-menu-button>
                     </ion-buttons>
-                    ENCABEZADO VER PERSONAS
+                    PERSONAS CENSADAS
                 </ion-toolbar>
             </ion-header>
-            <ion-content id="content-personas">
+            <ion-content id="content-personas" class="content-center">
+                <div id="divVerPersonas" class="centered-content">
 
+                </div>
             </ion-content>
         </ion-page>
 
