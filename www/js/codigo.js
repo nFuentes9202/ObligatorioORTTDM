@@ -459,7 +459,8 @@ function ListarPersonas(){
             method: "GET",
             headers: {
                 "Content-type": "application/json",
-                "idUsuario": localStorage.getItem("idUsuario"),
+                "apikey": localStorage.getItem("apiKey"),
+                "iduser": localStorage.getItem("idUsuario"),
             }
         })
             .then(function (response) {
@@ -477,14 +478,13 @@ function ListarPersonas(){
             .then(function (datosRespuesta) {
                 let data = "";
                 for (let i = 0; i < datosRespuesta.personas.length; i++) {
-                    data += 
                     data += `<ion-card>`;
-                    data += `<ion-card-header><ion-card-title>${datosRespuesta.personas[i].nombre}</ion-card-title>`;
-                    data += `</ion-card-header><ion-card-content>`;
-                    data += `<p>Nombre: ${datosRespuesta.data[i].nombre}</p>`;
-                    data += `<p>Fecha de nacimiento: ${datosRespuesta.data[i].fechaNacimiento}</p>`;
-                    data += `<p>Ocupación: ${datosRespuesta.data[i].ocupacion}</p>`;
-                    data += `<ion-button fill="clear" onclick=EliminarDatos('${datosRespuesta.data[i]._id}')>Eliminar</ion-button>`;
+                    data += `<ion-card-header><ion-card-title>${datosRespuesta.personas[i].nombre}</ion-card-title></ion-card-header>`;
+                    data += `<ion-card-content>`;
+                    data += `<p>Nombre: ${datosRespuesta.personas[i].nombre}</p>`;
+                    data += `<p>Fecha de nacimiento: ${datosRespuesta.personas[i].fechaNacimiento}</p>`;
+                    data += `<p>Ocupación: ${datosRespuesta.personas[i].ocupacion}</p>`;
+                    data += `<ion-button fill="clear" onclick=EliminarDatos('${datosRespuesta.personas[i]._id}')>Eliminar</ion-button>`;
                     data += `</ion-card-content></ion-card>`;
                 }
                 document.querySelector("#content-personas").innerHTML = data;
