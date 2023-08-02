@@ -48,11 +48,9 @@ function OcultarBotones(hayUsuarioLogueado) {
         document.querySelector("#btnLogout").style.display = "block";
     }
 }
-
 function CerrarMenu() {
     menu.close();
 }
-
 function EventListeners() {
     document.querySelector("#btnRegistrar").addEventListener("click", RegistroUsuario);
     document.querySelector("#btnLoguear").addEventListener("click", LoguearUsuario);
@@ -60,10 +58,10 @@ function EventListeners() {
     document.querySelector("#slcDepartamentoAgregarPersona").addEventListener("change", CargarCiudadesSlc);
     document.querySelector("#fechaNacPersonaAgregar").addEventListener("ionChange", CargarOcupacionesSlc);
     document.querySelector("#btnAgregarPersonaAPI").addEventListener("click", CrearPersonaAgregar);
+    document.querySelector("#btnVistaPersonas").addEventListener("click", ListarPersonas);
     document.querySelector("#btnLogout").addEventListener("click", CerrarSesion);
     ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
 }
-
 function mostrarPagina(evento) {
     OcultarPaginas();
     if (evento.detail.to == "/") {
@@ -88,15 +86,12 @@ function mostrarPagina(evento) {
         pagMapa.style.display = "block";
     }
 }
-
 function OcultarPaginas() {
     let paginas = document.querySelectorAll("ion-page");
     for (let i = 0; i < paginas.length; i++) {
         paginas[i].style.display = "none";
     }
 }
-
-
 /*EventListeners();
 SetVariablesGlobales();
 let hayUsuarioLogueado = false;
@@ -291,7 +286,6 @@ function LimpiarCamposRegistro() {
 }
 
 /*SECCION AGREGAR PERSONA*/
-
 function CargarDepartamentosSlc() {
     if (localStorage.getItem("apiKey") != null) {
         const apiKey = localStorage.getItem("apiKey");
@@ -422,7 +416,6 @@ function CrearPersonaAgregar() {
     let datosPersona = new Persona(idUsuario, nombre, departamento, ciudad, fechaNacimiento, ocupacion);//crea un objeto persona
     AgregarPersonaAPI(datosPersona);//lo agrega a la api
 }
-
 function AgregarPersonaAPI(datosPersona) {
     if (localStorage.getItem("token") != null) {
         const apiKey = localStorage.getItem("apiKey");
@@ -452,6 +445,52 @@ function AgregarPersonaAPI(datosPersona) {
             })
             .catch(function (error) {//si hay error, lo muestra
                 document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
+            })
+    }
+}
+
+/*SECCION VER PERSONAS*/
+function ListarPersonas(){
+    console.log(localStorage.getItem("apiKey"));
+    if (localStorage.getItem("apiKey") != null) {
+        console.log(localStorage.getItem("idUsuario"));
+        const idUsuario = localStorage.getItem("idUsuario");
+        fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "idUsuario": localStorage.getItem("idUsuario"),
+            }
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                }
+                else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(function (datosRespuesta) {
+                let data = "";
+                for (let i = 0; i < datosRespuesta.personas.length; i++) {
+                    data += 
+                    data += `<ion-card>`;
+                    data += `<ion-card-header><ion-card-title>${datosRespuesta.personas[i].nombre}</ion-card-title>`;
+                    data += `</ion-card-header><ion-card-content>`;
+                    data += `<p>Nombre: ${datosRespuesta.data[i].nombre}</p>`;
+                    data += `<p>Fecha de nacimiento: ${datosRespuesta.data[i].fechaNacimiento}</p>`;
+                    data += `<p>Ocupación: ${datosRespuesta.data[i].ocupacion}</p>`;
+                    data += `<ion-button fill="clear" onclick=EliminarDatos('${datosRespuesta.data[i]._id}')>Eliminar</ion-button>`;
+                    data += `</ion-card-content></ion-card>`;
+                }
+                document.querySelector("#content-personas").innerHTML = data;
+            })
+            .catch(function (error) {
+                document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar
             })
     }
 }
