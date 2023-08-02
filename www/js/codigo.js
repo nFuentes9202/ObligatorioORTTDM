@@ -221,12 +221,67 @@ function LoguearUsuario() {
             })
             .then(datosError => {
                 if (datosError != undefined) {
-                    document.querySelector("#txtLogin").innerHTML = datosError.error;
+                    CrearMensaje(datosError.error);
                 }
             })
     } catch (error) {
         document.querySelector("#txtLogin").innerHTML = error.message;
     }
+}
+function LoguearUsuarioAlRegistrarse(usuario, password) {
+    let nombreUsuario = usuario;
+    let passwordUsuario = password;
+    try {
+        datosUsuario = {
+            usuario: nombreUsuario,
+            password: passwordUsuario
+        }
+        fetch("https://censo.develotion.com/login.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(datosUsuario),
+        })
+            .then(response => {
+                if (response.status == 200) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(data => {
+                if (data.codigo != 200) {
+                    throw new Error(`${data.mensaje}`)
+                }
+                document.querySelector("#txtLogin").innerHTML = "Login exitoso";
+                hayUsuarioLogueado = true;
+                localStorage.setItem("apiKey", data.apiKey);
+                localStorage.setItem("idUsuario", data.id);
+                Inicio(true);
+                OcultarBotones(true);
+                ruteo.push("/agregarPersona");
+            })
+            .catch((error) => {
+                error.json().then((data) => {
+                    CrearMensaje(data.mensaje);
+                });
+            })
+            .then(datosError => {
+                if (datosError != undefined) {
+                    CrearMensaje(datosError.error)
+                }
+            })
+    } catch (error) {
+        CrearMensaje(error.message);
+    }
+}
+function CrearMensaje(mensaje){
+    let toast = document.createElement('ion-toast');
+    toast.message = mensaje;
+    toast.duration = 10000;
+    document.body.appendChild(toast);
+    return toast.present();
 }
 function CerrarSesion() {
     hayUsuarioLogueado = false;
@@ -261,7 +316,8 @@ function RegistroUsuario() {//registra un usuario
             })
             .then(response => {
                 if (response.ok) {//si la respuesta es ok
-                    document.querySelector("#txtRegistro").innerHTML = "Se ha registrado exitosamente";//muestra el mensaje
+                    CrearMensaje("Se ha registrado exitosamente");//muestra el mensaje
+                    LoguearUsuarioAlRegistrarse(nombre,password);
                     return response.json();//devuelve la respuesta
                     //return LimpiarCamposRegistro();//limpia los campos
                 } else {//si no es ok
@@ -269,15 +325,12 @@ function RegistroUsuario() {//registra un usuario
                 }
             })
             .then((data) => {//segun la respuesta
-
             })
             .catch((error) => {//si hay error
-                error.json().then((data) => {//lo muestra
-                    document.querySelector("#txtRegistro").innerHTML = data.mensaje;//muestra el mensaje
-                });
+                CrearMensaje(error.message);
             });
     } catch (error) {//si hay error
-        document.querySelector("#txtRegistro").innerHTML = error.message//muestra el mensaje
+        CrearMensaje(error.message)//muestra el mensaje
     }
 }
 function LimpiarCamposRegistro() {
