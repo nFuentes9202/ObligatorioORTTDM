@@ -471,7 +471,7 @@ function CrearPersonaAgregar() {
     AgregarPersonaAPI(datosPersona);//lo agrega a la api
 }
 function AgregarPersonaAPI(datosPersona) {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem("apiKey") != null) {
         const apiKey = localStorage.getItem("apiKey");
         const idUsuario = localStorage.getItem("idUsuario");
 
