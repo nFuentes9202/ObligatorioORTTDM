@@ -80,6 +80,7 @@ function mostrarPagina(evento) {
         pagListado.style.display = "block";
 
     } else if (evento.detail.to == "/censadosTotales") {
+        MostrarCensados();
         pagCensadosTotales.style.display = "block";
 
     } else if (evento.detail.to == "/verMapa") {
@@ -545,5 +546,44 @@ function ListarPersonas(){
             .catch(function (error) {
                 document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar
             })
+    }
+}
+function MostrarCensados(){
+    if(localStorage.getItem("apiKey") != null){
+        let idUsuario = localStorage.getItem("idUsuario");
+        fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "iduser": idUsuario,
+                "apiKey": localStorage.getItem("apiKey")
+            }
+        })
+        .then(response =>{
+            if(response.ok){
+                return response.json();
+            } else if(response.status == 401){
+                CrearMensaje("Es necesario volver a loguearse");
+                localStorage.clear();
+                ruteo.push("/");
+            } else{
+                return Promise.reject(response);
+            }
+        })
+        .then(datosRespuesta =>{
+            let contadorMontevideo = 0;
+            let contadorInterior = 0;
+            for (let i = 0; i < datosRespuesta.personas.length; i++) {
+                const persona = datosRespuesta.personas[i];
+                if(persona.departamento == 3218){
+                    contadorMontevideo++
+                } else{
+                    contadorInterior++
+                }
+            }
+            document.querySelector("#txtCensadosInterior").innerHTML = `El total de personas censadas en el interior es de ${contadorInterior} personas.`;
+            document.querySelector("#txtCensadosMontevideo").innerHTML = `El total de personas censadas en Montevideo es de ${contadorMontevideo} personas.`;
+            document.querySelector("#txtCensadosTotales").innerHTML = `El total de personas censadas es de ${contadorMontevideo+contadorInterior} personas.`;
+        })
     }
 }
