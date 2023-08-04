@@ -71,6 +71,7 @@ function EventListeners() {
     document.querySelector("#btnAgregarPersonaAPI").addEventListener("click", CrearPersonaAgregar);
     document.querySelector("#btnVistaPersonas").addEventListener("click", ListarPersonas);
     document.querySelector("#btnLogout").addEventListener("click", CerrarSesion);
+    document.querySelector("#btnCenso").addEventListener("click", BuscarCoordenadasPersonasCensadas);
     ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
 }
 function mostrarPagina(evento) {
@@ -609,4 +610,88 @@ function MostrarMapa(){
         attribution: '© OpenStreetMap'
     }).addTo(mapa);
     L.marker([latitudOrigen,longitudOrigen]).addTo(mapa);
+}
+
+function BuscarCoordenadasPersonasCensadas(){
+    if (localStorage.getItem("apiKey") != null) {
+        const idUsuario = localStorage.getItem("idUsuario");
+        fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "apikey": localStorage.getItem("apiKey"),
+                "iduser": localStorage.getItem("idUsuario"),
+            }
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                }
+                else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(function (datosRespuesta) {
+                let coordenadasEncontradas = [];
+                for (let i = 0; i < datosRespuesta.personas.length; i++) {
+                    const persona = datosRespuesta.personas[i];
+                    ciudadUsuario = buscarCiudadUsuario(persona.departamento, persona.ciudad)
+                    coordenadasCenso = buscarCoordenadasCiudad(ciudadUsuario);
+                    coordenadasEncontradas.push(coordenadasCenso);
+                }
+                console.log(datosRespuesta);
+                }
+            )
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+}
+function buscarCiudadUsuario(idDepartamento,idCiudad ){
+    fetch("https://censo.develotion.com/ciudades.php?idDepartamento="+idDepartamento, {
+                        method: "GET",
+                        headers:{
+                            "apikey": localStorage.getItem("apiKey"),
+                            "iduser": localStorage.getItem("idUsuario"),
+                        }
+                    }
+    )
+    .then(response =>{
+        if(response.ok){
+            return response.json();
+        } else if (response.status == 401) {
+            alert("Es necesario volver a loguearse");
+            ruteo.push("/");
+        }
+        else {
+            return Promise.reject(response);
+        }
+    })
+    .then(datosRespuesta =>{
+        for (let i = 0; i < datosRespuesta.ciudades.length; i++) {
+            const ciudad = datosRespuesta[i];
+            if(ciudad.id == idCiudad){
+                return ciudad;
+            }
+        }
+        return null;
+    })
+}
+function buscarCoordenadasCiudad(objetoCiudad){
+    fetch(`https://nominatim.openstreetmap.org/search?city=${objetoCiudad.nombre}$country=Uruguay&format=json`)
+    .then(response =>{
+        return response.json();
+    })
+    .then(datosRespuesta =>{
+        let coordenadas = datosRespuesta.lat + "|" + datosRespuesta.lon;
+        return coordenadas;
+
+    })
+    .catch(error =>{
+        console.log(error);
+    })
 }
