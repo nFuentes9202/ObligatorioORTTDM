@@ -71,7 +71,7 @@ function EventListeners() {
     document.querySelector("#btnAgregarPersonaAPI").addEventListener("click", CrearPersonaAgregar);
     document.querySelector("#btnVistaPersonas").addEventListener("click", ListarPersonas);
     document.querySelector("#btnLogout").addEventListener("click", CerrarSesion);
-    document.querySelector("#btnCenso").addEventListener("click", BuscarCoordenadasPersonasCensadas);
+    document.querySelector("#btnCenso").addEventListener("click", MostrarCiudadesCensadasDentroDelRango);
     ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
 }
 function mostrarPagina(evento) {
@@ -673,7 +673,7 @@ function buscarCiudadUsuario(idDepartamento,idCiudad ){
     })
     .then(datosRespuesta =>{
         for (let i = 0; i < datosRespuesta.ciudades.length; i++) {
-            const ciudad = datosRespuesta[i];
+            const ciudad = datosRespuesta.ciudades[i];
             if(ciudad.id == idCiudad){
                 return ciudad;
             }
@@ -694,4 +694,22 @@ function buscarCoordenadasCiudad(objetoCiudad){
     .catch(error =>{
         console.log(error);
     })
+}
+function MostrarCiudadesCensadasDentroDelRango(){
+    let cantidadKm = Number(document.querySelector("#numKilometrosCenso").value)
+    if(cantidadKm == 0){
+        CrearMensaje("Por favor ingrese un valor válido. Gracias.");
+    }
+    coordenadas = BuscarCoordenadasPersonasCensadas();
+    mapa = L.map('map')
+    for (let i = 0; i < coordenadas.length; i++) {
+        const coordenada = coordenadas[i].split("|");
+        const latitud = coordenada[0]
+        const longitud = coordenada[1]
+        let distancia = map.distance([latitudOrigen, longitudOrigen], [latitud, longitud]).toFixed(2);
+        if(distancia <= cantidadKm){
+            L.marker([latitud,longitud]).addTo(mapa)
+        }
+    }
+
 }
