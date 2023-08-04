@@ -8,6 +8,10 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="js/Persona.js"></script>
     <script src="js/codigo.js" defer></script>
 </head>
@@ -177,7 +181,7 @@
                     <ion-buttons slot="start">
                         <ion-menu-button></ion-menu-button>
                     </ion-buttons>
-                    PERSONAS CENSADAS
+                    <h2>Personas censadas</h2>
                 </ion-toolbar>
             </ion-header>
             <ion-content id="content-personas" class="content-center">
@@ -219,11 +223,15 @@
                     <ion-buttons slot="start">
                         <ion-menu-button></ion-menu-button>
                     </ion-buttons>
-                    ENCABEZADO VER MAPA
+                    <h2>Ver mapa</h2>
                 </ion-toolbar>
             </ion-header>
             <ion-content>
-                PAGINA VER MAPA
+                <h3>Mapa</h3>
+                <style>
+                    #map { height: 300px; }
+                </style>
+                <div id="map"></div>
             </ion-content>
         </ion-page>
     </ion-app>

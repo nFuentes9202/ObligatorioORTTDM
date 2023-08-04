@@ -1,6 +1,9 @@
 let hayUsuarioLogueado;
 
 let token;
+let mapa;
+let latitudOrigen;
+let longitudOrigen;
 const ruteo = document.querySelector("#ruteo");
 const menu = document.querySelector("#menu");
 const pagHome = document.querySelector("#home");
@@ -10,6 +13,14 @@ const pagAddPersona = document.querySelector("#agregarPersona");
 const pagListado = document.querySelector("#verPersonas");
 const pagCensadosTotales = document.querySelector("#censadosTotales");
 const pagMapa = document.querySelector("#verMapa");
+navigator.geolocation.getCurrentPosition(SetearPosicionOrigen, MostrarError);
+function SetearPosicionOrigen(position){
+    latitudOrigen = position.coords.latitude;
+    longitudOrigen = position.coords.longitude;
+}
+function MostrarError(error){
+    CrearMensaje(error.message);
+}
 if(localStorage.getItem("idUsuario") != null){
     hayUsuarioLogueado = true;
 } else{
@@ -84,6 +95,7 @@ function mostrarPagina(evento) {
         pagCensadosTotales.style.display = "block";
 
     } else if (evento.detail.to == "/verMapa") {
+        MostrarMapa();
         pagMapa.style.display = "block";
     }
 }
@@ -586,4 +598,15 @@ function MostrarCensados(){
             document.querySelector("#txtCensadosTotales").innerHTML = `El total de personas censadas es de ${contadorMontevideo+contadorInterior} personas.`;
         })
     }
+}
+function MostrarMapa(){
+    if(mapa != null){
+        mapa.remove();
+    }
+    mapa = L.map('map').setView([latitudOrigen, longitudOrigen], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(mapa);
+    L.marker([latitudOrigen,longitudOrigen]).addTo(mapa);
 }
