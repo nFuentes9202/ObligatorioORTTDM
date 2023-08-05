@@ -547,7 +547,7 @@ function CargarOcupacionesAarray() {
                 /*ocupacionesArray = datosRespuesta;
                 console.log(ocupacionesArray);*/
                 for(let i=0; i<datosRespuesta.ocupaciones.length; i++){
-                    const ocupacionData = datosRespuesta[i];
+                    const ocupacionData = datosRespuesta.ocupaciones[i];
                     const ocupacion = new Ocupacion(ocupacionData.id, ocupacionData.ocupacion);
                     ocupacionesArray.push(ocupacion);
                 }
