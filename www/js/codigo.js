@@ -4,6 +4,7 @@ let token;
 let mapa;
 let latitudOrigen;
 let longitudOrigen;
+let ocupacionesArray = [];
 const ruteo = document.querySelector("#ruteo");
 const menu = document.querySelector("#menu");
 const pagHome = document.querySelector("#home");
@@ -89,6 +90,7 @@ function mostrarPagina(evento) {
         pagAddPersona.style.display = "block";
 
     } else if (evento.detail.to == "/verPersonas") {
+        CargarOcupacionesAarray();
         pagListado.style.display = "block";
 
     } else if (evento.detail.to == "/censadosTotales") {
@@ -517,6 +519,46 @@ function AgregarPersonaAPI(datosPersona) {
 }
 
 /*SECCION VER PERSONAS*/
+function CargarOcupacionesAarray() {
+    if (localStorage.getItem("apiKey") != null) {
+        //console.log(localStorage.getItem("idUsuario"));
+        //const idUsuario = localStorage.getItem("idUsuario");
+        fetch(`https://censo.develotion.com/ocupaciones.php`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "apikey": localStorage.getItem("apiKey"),
+                "iduser": localStorage.getItem("idUsuario"),
+            }
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                }
+                else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(function (datosRespuesta) {
+                /*ocupacionesArray = datosRespuesta;
+                console.log(ocupacionesArray);*/
+                for(let i=0; i<datosRespuesta.ocupaciones.length; i++){
+                    const ocupacionData = datosRespuesta[i];
+                    const ocupacion = new Ocupacion(ocupacionData.id, ocupacionData.ocupacion);
+                    ocupacionesArray.push(ocupacion);
+                }
+                console.log(ocupacionesArray);
+            })
+            .catch(function (error) {
+                //document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar
+            })
+    }
+}
+
 function ListarPersonas() {
     console.log(localStorage.getItem("apiKey"));
     if (localStorage.getItem("apiKey") != null) {
@@ -550,8 +592,15 @@ function ListarPersonas() {
                     data += `<ion-card-content>`;
                     data += `<p>Nombre: ${datosRespuesta.personas[i].nombre}</p>`;
                     data += `<p>Fecha de nacimiento: ${datosRespuesta.personas[i].fechaNacimiento}</p>`;
-                    data += `<p>Ocupación: ${datosRespuesta.personas[i].ocupacion}</p>`;
-                    data += `<ion-button fill="clear" onclick=EliminarDatos('${datosRespuesta.personas[i]._id}')>Eliminar</ion-button>`;
+                    let nombreOcupacion = "";
+                    for(let j=0; j<ocupacionesArray.length; j++){
+                        if(datosRespuesta.personas[i].ocupacion == ocupacionesArray[j].idOcupacion){
+                            nombreOcupacion = ocupacionesArray[j].nombre;
+                        }
+                    }
+                    data += `<p>Ocupación: ${nombreOcupacion}</p>`;
+                    data += `<ion-button fill="clear" onclick=EliminarDatos(${datosRespuesta.personas[i].id})>Eliminar</ion-button>`;
+                    console.log(datosRespuesta.personas[i]._id);
                     data += `</ion-card-content></ion-card>`;
                 }
                 document.querySelector("#divVerPersonas").innerHTML = data;
@@ -559,6 +608,85 @@ function ListarPersonas() {
             .catch(function (error) {
                 document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar
             })
+    }
+}
+
+/*function ListarPersonas() {
+    if (localStorage.getItem("apiKey") != null) {
+        console.log(localStorage.getItem("idUsuario"));
+        const idUsuario = localStorage.getItem("idUsuario");
+        fetch(`https://censo.develotion.com/ocupaciones.php`)
+        .then(response => response.json())
+        .then(ocupacionesRespuesta => {
+            fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json",
+                    "apikey": localStorage.getItem("apiKey"),
+                    "iduser": localStorage.getItem("idUsuario"),
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(datosRespuesta => {
+                let data = "";
+                for (let i = 0; i < datosRespuesta.personas.length; i++) {
+                    const persona = datosRespuesta.personas[i];
+                    const ocupacion = ocupacionesRespuesta.find(oc => oc.id === persona.ocupacion);
+                    const nombreOcupacion = ocupacion ? ocupacion.nombre : 'Ocupación desconocida';
+
+                    data += `<ion-card>`;
+                    data += `<ion-card-header><ion-card-title>${persona.nombre}</ion-card-title></ion-card-header>`;
+                    data += `<ion-card-content>`;
+                    data += `<p>Nombre: ${persona.nombre}</p>`;
+                    data += `<p>Fecha de nacimiento: ${persona.fechaNacimiento}</p>`;
+                    data += `<p>Ocupación: ${nombreOcupacion}</p>`;
+                    data += `<ion-button fill="clear" onclick="EliminarDatos('${persona._id}')">Eliminar</ion-button>`;
+                    data += `</ion-card-content></ion-card>`;
+                }
+                document.querySelector("#divVerPersonas").innerHTML = data;
+            })
+            .catch(error => {
+                console.error("Error al obtener datos de personas:", error);
+            });
+        })
+        .catch(error => {
+            console.error("Error al obtener datos de ocupaciones:", error);
+        });
+    }
+}*/
+
+function EliminarDatos(idPersona) {
+    const apiKey = localStorage.getItem("apiKey");
+    if (apiKey != null) {
+        // Realizar la solicitud para eliminar la persona con el _id especificado
+        fetch(`https://censo.develotion.com/personas.php?idCenso=${idPersona}`, {
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json",
+                "apikey": apiKey,
+                "iduser": localStorage.getItem("idUsuario"),
+            }
+        })
+        .then(function (response) {
+            if (response.ok) {
+                // Eliminación exitosa, puedes actualizar la lista de personas si lo deseas
+                ListarPersonas();
+            } else {
+                return Promise.reject(response);
+            }
+        })
+        .catch(function (error) {
+            console.error("Error al eliminar la persona:", error);
+        });
     }
 }
 function MostrarCensados() {
@@ -600,6 +728,8 @@ function MostrarCensados() {
             })
     }
 }
+
+/*VER MAPA*/
 function MostrarMapa() {
     if (mapa != null) {
         mapa.remove();
