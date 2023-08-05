@@ -14,29 +14,29 @@ const pagListado = document.querySelector("#verPersonas");
 const pagCensadosTotales = document.querySelector("#censadosTotales");
 const pagMapa = document.querySelector("#verMapa");
 navigator.geolocation.getCurrentPosition(SetearPosicionOrigen, MostrarError);
-function SetearPosicionOrigen(position){
+function SetearPosicionOrigen(position) {
     latitudOrigen = position.coords.latitude;
     longitudOrigen = position.coords.longitude;
 }
-function MostrarError(error){
+function MostrarError(error) {
     CrearMensaje(error.message);
 }
-if(localStorage.getItem("idUsuario") != null){
+if (localStorage.getItem("idUsuario") != null) {
     hayUsuarioLogueado = true;
-} else{
+} else {
     hayUsuarioLogueado = false;
 }
 inicializar(hayUsuarioLogueado);//inicializa la pagina
 function inicializar(hayUsuarioLogueado) {
-    
+
     Inicio(hayUsuarioLogueado);
 }
 function Inicio(hayUsuarioLogueado) {
     OcultarBotones(hayUsuarioLogueado);
     EventListeners();
-    if(hayUsuarioLogueado){
+    if (hayUsuarioLogueado) {
         ruteo.push("/agregarPersona")
-    } else{
+    } else {
         ruteo.push("/")
     }
 }
@@ -71,7 +71,7 @@ function EventListeners() {
     document.querySelector("#btnAgregarPersonaAPI").addEventListener("click", CrearPersonaAgregar);
     document.querySelector("#btnVistaPersonas").addEventListener("click", ListarPersonas);
     document.querySelector("#btnLogout").addEventListener("click", CerrarSesion);
-    document.querySelector("#btnCenso").addEventListener("click", MostrarCiudadesCensadasDentroDelRango);
+    document.querySelector("#btnCenso").addEventListener("click", BuscarCoordenadasPersonasCensadas);
     ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
 }
 function mostrarPagina(evento) {
@@ -290,7 +290,7 @@ function LoguearUsuarioAlRegistrarse(usuario, password) {
         CrearMensaje(error.message);
     }
 }
-function CrearMensaje(mensaje){
+function CrearMensaje(mensaje) {
     let toast = document.createElement('ion-toast');
     toast.message = mensaje;
     toast.duration = 10000;
@@ -331,7 +331,7 @@ function RegistroUsuario() {//registra un usuario
             .then(response => {
                 if (response.ok) {//si la respuesta es ok
                     CrearMensaje("Se ha registrado exitosamente");//muestra el mensaje
-                    LoguearUsuarioAlRegistrarse(nombre,password);
+                    LoguearUsuarioAlRegistrarse(nombre, password);
                     return response.json();//devuelve la respuesta
                     //return LimpiarCamposRegistro();//limpia los campos
                 } else {//si no es ok
@@ -378,7 +378,7 @@ function CargarDepartamentosSlc() {
             })
             .then(function (datosRespuesta) {
                 let data = "";//crea una variable vacia
-                data+= `<option value="0">Seleccione un departamento</option>`;//le asigna el valor
+                data += `<option value="0">Seleccione un departamento</option>`;//le asigna el valor
                 for (let i = 0; i < datosRespuesta.departamentos.length; i++) {//recorre el array de departamentos
                     data += `<option value="${datosRespuesta.departamentos[i].id}">${datosRespuesta.departamentos[i].nombre}</option>`;//le asigna el nombre del departamento
                 }
@@ -414,7 +414,7 @@ function CargarCiudadesSlc() {
             })
             .then(function (datosRespuesta) {
                 let data = "";//crea una variable vacia
-                data+= `<option value="0">Seleccione una ciudad</option>`;//le asigna el valor
+                data += `<option value="0">Seleccione una ciudad</option>`;//le asigna el valor
                 for (let i = 0; i < datosRespuesta.ciudades.length; i++) {//recorre el array de ciudades
                     data += `<option value="${datosRespuesta.ciudades[i].id}">${datosRespuesta.ciudades[i].nombre}</option>`;//le asigna el nombre de la ciudad
                 }
@@ -455,12 +455,12 @@ function CargarOcupacionesSlc() {
             })
             .then(function (datosRespuesta) {
                 let data = "";//crea una variable vacia
-                data+= `<option value="0">Seleccione una ocupacion</option>`;//le asigna el valor
+                data += `<option value="0">Seleccione una ocupacion</option>`;//le asigna el valor
 
                 for (let i = 0; i < datosRespuesta.ocupaciones.length; i++) {//recorre el array de ciudades
-                    if(edad<18 && datosRespuesta.ocupaciones[i].id==5){//si es menor de edad y la ocupacion es estudiante
+                    if (edad < 18 && datosRespuesta.ocupaciones[i].id == 5) {//si es menor de edad y la ocupacion es estudiante
                         data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;//le asigna el nombre de la ocupacion
-                    }else if(edad>=18){
+                    } else if (edad >= 18) {
                         data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;//le asigna el nombre de la ocupacion
                     }
                 }
@@ -517,7 +517,7 @@ function AgregarPersonaAPI(datosPersona) {
 }
 
 /*SECCION VER PERSONAS*/
-function ListarPersonas(){
+function ListarPersonas() {
     console.log(localStorage.getItem("apiKey"));
     if (localStorage.getItem("apiKey") != null) {
         console.log(localStorage.getItem("idUsuario"));
@@ -561,8 +561,8 @@ function ListarPersonas(){
             })
     }
 }
-function MostrarCensados(){
-    if(localStorage.getItem("apiKey") != null){
+function MostrarCensados() {
+    if (localStorage.getItem("apiKey") != null) {
         let idUsuario = localStorage.getItem("idUsuario");
         fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
             method: "GET",
@@ -572,36 +572,36 @@ function MostrarCensados(){
                 "apiKey": localStorage.getItem("apiKey")
             }
         })
-        .then(response =>{
-            if(response.ok){
-                return response.json();
-            } else if(response.status == 401){
-                CrearMensaje("Es necesario volver a loguearse");
-                localStorage.clear();
-                ruteo.push("/");
-            } else{
-                return Promise.reject(response);
-            }
-        })
-        .then(datosRespuesta =>{
-            let contadorMontevideo = 0;
-            let contadorInterior = 0;
-            for (let i = 0; i < datosRespuesta.personas.length; i++) {
-                const persona = datosRespuesta.personas[i];
-                if(persona.departamento == 3218){
-                    contadorMontevideo++
-                } else{
-                    contadorInterior++
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 401) {
+                    CrearMensaje("Es necesario volver a loguearse");
+                    localStorage.clear();
+                    ruteo.push("/");
+                } else {
+                    return Promise.reject(response);
                 }
-            }
-            document.querySelector("#txtCensadosInterior").innerHTML = `El total de personas censadas en el interior es de ${contadorInterior} personas.`;
-            document.querySelector("#txtCensadosMontevideo").innerHTML = `El total de personas censadas en Montevideo es de ${contadorMontevideo} personas.`;
-            document.querySelector("#txtCensadosTotales").innerHTML = `El total de personas censadas es de ${contadorMontevideo+contadorInterior} personas.`;
-        })
+            })
+            .then(datosRespuesta => {
+                let contadorMontevideo = 0;
+                let contadorInterior = 0;
+                for (let i = 0; i < datosRespuesta.personas.length; i++) {
+                    const persona = datosRespuesta.personas[i];
+                    if (persona.departamento == 3218) {
+                        contadorMontevideo++
+                    } else {
+                        contadorInterior++
+                    }
+                }
+                document.querySelector("#txtCensadosInterior").innerHTML = `El total de personas censadas en el interior es de ${contadorInterior} personas.`;
+                document.querySelector("#txtCensadosMontevideo").innerHTML = `El total de personas censadas en Montevideo es de ${contadorMontevideo} personas.`;
+                document.querySelector("#txtCensadosTotales").innerHTML = `El total de personas censadas es de ${contadorMontevideo + contadorInterior} personas.`;
+            })
     }
 }
-function MostrarMapa(){
-    if(mapa != null){
+function MostrarMapa() {
+    if (mapa != null) {
         mapa.remove();
     }
     mapa = L.map('map').setView([latitudOrigen, longitudOrigen], 13);
@@ -609,12 +609,16 @@ function MostrarMapa(){
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(mapa);
-    L.marker([latitudOrigen,longitudOrigen]).addTo(mapa);
+    L.marker([latitudOrigen, longitudOrigen]).addTo(mapa);
 }
-
-function BuscarCoordenadasPersonasCensadas(){
+function BuscarCoordenadasPersonasCensadas() {
     if (localStorage.getItem("apiKey") != null) {
-        const idUsuario = localStorage.getItem("idUsuario");
+        try {
+            let km = Number(document.querySelector("#numKilometrosCenso").value);
+            if (km == 0) {
+                throw new Error("Ingrese un valor válido");
+            }
+            const idUsuario = localStorage.getItem("idUsuario");
         fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
             method: "GET",
             headers: {
@@ -636,80 +640,54 @@ function BuscarCoordenadasPersonasCensadas(){
                 }
             })
             .then(function (datosRespuesta) {
-                let coordenadasEncontradas = [];
-                for (let i = 0; i < datosRespuesta.personas.length; i++) {
-                    const persona = datosRespuesta.personas[i];
-                    ciudadUsuario = buscarCiudadUsuario(persona.departamento, persona.ciudad)
-                    coordenadasCenso = buscarCoordenadasCiudad(ciudadUsuario);
-                    coordenadasEncontradas.push(coordenadasCenso);
-                }
-                console.log(datosRespuesta);
+                datosRespuesta.personas.forEach(persona =>{
+                    fetch("https://censo.develotion.com/ciudades.php?idDepartamento="+persona.departamento, {
+                        method: "GET",
+                        headers: {
+                            "Content-type": "application/json",
+                            "apikey": localStorage.getItem("apiKey"),
+                            "iduser": localStorage.getItem("idUsuario"),
+                        }})
+                    .then(response =>{
+                        if(response.ok){
+                            return response.json();
+                        } else{
+                            return Promise.reject(response);
+                        }
+                    })
+                    .then(datosRespuesta =>{
+                        datosRespuesta.ciudades.forEach(ciudad => {
+                            if(ciudad.id == persona.ciudad){
+                                fetch(`https://nominatim.openstreetmap.org/search?city=${ciudad.nombre}&country=Uruguay&format=json`)
+                                .then(response =>{
+                                    if(response.ok){
+                                        return response.json()
+                                    } else{
+                                        return Promise.reject(response)
+                                    }
+                                })
+                                .then(datosRespuesta =>{
+                                    datosRespuesta.forEach(ciudad => {
+                                        let distancia = mapa.distance([latitudOrigen,longitudOrigen], [ciudad.lat,ciudad.lon]).toFixed(2);
+                                        if(distancia <= km){
+                                            L.marker([ciudad.lat, ciudad.lon]).addTo(mapa);
+                                            CrearMensaje("Se ha añadido un punto nuevo")
+                                        }
+                                    });
+                                })
+                            }
+                        });
+                    })
+                })
+
                 }
             )
             .catch(function (error) {
                 console.log(error);
             })
-    }
-}
-function buscarCiudadUsuario(idDepartamento,idCiudad ){
-    fetch("https://censo.develotion.com/ciudades.php?idDepartamento="+idDepartamento, {
-                        method: "GET",
-                        headers:{
-                            "apikey": localStorage.getItem("apiKey"),
-                            "iduser": localStorage.getItem("idUsuario"),
-                        }
-                    }
-    )
-    .then(response =>{
-        if(response.ok){
-            return response.json();
-        } else if (response.status == 401) {
-            alert("Es necesario volver a loguearse");
-            ruteo.push("/");
-        }
-        else {
-            return Promise.reject(response);
-        }
-    })
-    .then(datosRespuesta =>{
-        for (let i = 0; i < datosRespuesta.ciudades.length; i++) {
-            const ciudad = datosRespuesta.ciudades[i];
-            if(ciudad.id == idCiudad){
-                return ciudad;
-            }
-        }
-        return null;
-    })
-}
-function buscarCoordenadasCiudad(objetoCiudad){
-    fetch(`https://nominatim.openstreetmap.org/search?city=${objetoCiudad.nombre}$country=Uruguay&format=json`)
-    .then(response =>{
-        return response.json();
-    })
-    .then(datosRespuesta =>{
-        let coordenadas = datosRespuesta.lat + "|" + datosRespuesta.lon;
-        return coordenadas;
 
-    })
-    .catch(error =>{
-        console.log(error);
-    })
-}
-function MostrarCiudadesCensadasDentroDelRango(){
-    let cantidadKm = Number(document.querySelector("#numKilometrosCenso").value)
-    if(cantidadKm == 0){
-        CrearMensaje("Por favor ingrese un valor válido. Gracias.");
-    }
-    coordenadas = BuscarCoordenadasPersonasCensadas();
-    mapa = L.map('map')
-    for (let i = 0; i < coordenadas.length; i++) {
-        const coordenada = coordenadas[i].split("|");
-        const latitud = coordenada[0]
-        const longitud = coordenada[1]
-        let distancia = map.distance([latitudOrigen, longitudOrigen], [latitud, longitud]).toFixed(2);
-        if(distancia <= cantidadKm){
-            L.marker([latitud,longitud]).addTo(mapa)
+        } catch (error) {
+            CrearMensaje(error.message);
         }
     }
-
 }
