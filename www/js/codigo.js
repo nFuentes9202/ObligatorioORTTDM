@@ -609,7 +609,7 @@ function MostrarMapa() {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(mapa);
-    L.marker([latitudOrigen, longitudOrigen]).addTo(mapa);
+    L.marker([latitudOrigen, longitudOrigen]).bindPopup("Acá estás vos").addTo(mapa);
 }
 function BuscarCoordenadasPersonasCensadas() {
     if (localStorage.getItem("apiKey") != null) {
@@ -619,72 +619,62 @@ function BuscarCoordenadasPersonasCensadas() {
                 throw new Error("Ingrese un valor válido");
             }
             const idUsuario = localStorage.getItem("idUsuario");
-        fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
-            method: "GET",
-            headers: {
-                "Content-type": "application/json",
-                "apikey": localStorage.getItem("apiKey"),
-                "iduser": localStorage.getItem("idUsuario"),
-            }
-        })
-            .then(function (response) {
-                if (response.ok) {
-                    return response.json();
-                }
-                else if (response.status == 401) {
-                    alert("Es necesario volver a loguearse");
-                    ruteo.push("/");
-                }
-                else {
-                    return Promise.reject(response);
+            fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json",
+                    "apikey": localStorage.getItem("apiKey"),
+                    "iduser": localStorage.getItem("idUsuario"),
                 }
             })
-            .then(function (datosRespuesta) {
-                datosRespuesta.personas.forEach(persona =>{
-                    fetch("https://censo.develotion.com/ciudades.php?idDepartamento="+persona.departamento, {
-                        method: "GET",
-                        headers: {
-                            "Content-type": "application/json",
-                            "apikey": localStorage.getItem("apiKey"),
-                            "iduser": localStorage.getItem("idUsuario"),
-                        }})
-                    .then(response =>{
-                        if(response.ok){
-                            return response.json();
-                        } else{
-                            return Promise.reject(response);
-                        }
-                    })
-                    .then(datosRespuesta =>{
-                        datosRespuesta.ciudades.forEach(ciudad => {
-                            if(ciudad.id == persona.ciudad){
-                                fetch(`https://nominatim.openstreetmap.org/search?city=${ciudad.nombre}&country=Uruguay&format=json`)
-                                .then(response =>{
-                                    if(response.ok){
-                                        return response.json()
-                                    } else{
-                                        return Promise.reject(response)
-                                    }
-                                })
-                                .then(datosRespuesta =>{
-                                    datosRespuesta.forEach(ciudad => {
-                                        let distancia = mapa.distance([latitudOrigen,longitudOrigen], [ciudad.lat,ciudad.lon]).toFixed(2);
-                                        if(distancia <= km){
-                                            L.marker([ciudad.lat, ciudad.lon]).addTo(mapa);
-                                            CrearMensaje("Se ha añadido un punto nuevo")
-                                        }
-                                    });
-                                })
-                            }
-                        });
-                    })
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    else if (response.status == 401) {
+                        alert("Es necesario volver a loguearse");
+                        ruteo.push("/");
+                    }
+                    else {
+                        return Promise.reject(response);
+                    }
                 })
+                .then(function (datosRespuesta) {
+                    datosRespuesta.personas.forEach(persona => {
+                        fetch("https://censo.develotion.com/ciudades.php?idDepartamento=" + persona.departamento, {
+                            method: "GET",
+                            headers: {
+                                "Content-type": "application/json",
+                                "apikey": localStorage.getItem("apiKey"),
+                                "iduser": localStorage.getItem("idUsuario"),
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    return Promise.reject(response);
+                                }
+                            })
+                            .then(datosRespuesta => {
+                                datosRespuesta.ciudades.forEach(ciudad => {
+                                    if (ciudad.id == persona.ciudad) {
+                                        let distancia = mapa.distance([latitudOrigen, longitudOrigen], [ciudad.latitud, ciudad.longitud]).toFixed(2);
+                                        if (distancia <= km) {
+                                            L.marker([ciudad.latitud, ciudad.longitud],).bindPopup(`${ciudad.nombre}`).addTo(mapa)
+                                            
+                                            CrearMensaje("Se ha añadido un punto nuevo")
+                                        };
+                                    }
+                                });
+                            })
+                    })
 
                 }
-            )
-            .catch(function (error) {
-                console.log(error);
-            })
+                )
+                .catch(function (error) {
+                    CrearMensaje(error.message);
+                })
 
         } catch (error) {
             CrearMensaje(error.message);
