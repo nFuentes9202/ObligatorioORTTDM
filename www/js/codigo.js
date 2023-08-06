@@ -2,8 +2,8 @@ let hayUsuarioLogueado;
 
 let token;
 let mapa;
-let latitudOrigen;
-let longitudOrigen;
+let latitudOrigen = -34.8446286;
+let longitudOrigen = -56.2147198;
 let ocupacionesArray = [];
 const ruteo = document.querySelector("#ruteo");
 const menu = document.querySelector("#menu");
