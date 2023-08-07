@@ -292,10 +292,6 @@ function LimpiarCamposRegistro() {
     document.querySelector("#txtUsuarioRegistro").value = "";
     document.querySelector("#txtPasswordRegistro").value = "";
 }
-/*function LimpiarCamposLogin() {
-    document.querySelector("#txtUsuarioLogin").value = "";
-    document.querySelector("#txtPasswordLogin").value = "";
-}*/
 
 /*SECCION AGREGAR PERSONA*/
 function CargarDepartamentosSlc() {
@@ -330,7 +326,7 @@ function CargarDepartamentosSlc() {
                 document.querySelector("#slcDepartamentoAgregarPersona").innerHTML = data;//lo agrega al select
             })
             .catch(function (error) {//si hay error, lo muestra
-                document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
+                CrearMensaje(error.error)
             })
     }
 }
@@ -366,7 +362,7 @@ function CargarCiudadesSlc() {
                 document.querySelector("#slcCiudadAgregarPersona").innerHTML = data;//lo agrega al select
             })
             .catch(function (error) {//si hay error, lo muestra
-                document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
+                CrearMensaje(error.error)
             })
     }
 }
@@ -412,7 +408,7 @@ function CargarOcupacionesSlc() {
                 document.querySelector("#slcOcupacionAgregarPersona").innerHTML = data;//lo agrega al select
             })
             .catch(function (error) {//si hay error, lo muestra
-                document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
+                CrearMensaje(error.error)
             })
     }
 }
@@ -456,7 +452,7 @@ function AgregarPersonaAPI(datosPersona) {
                 document.querySelector("#pErrorAgregarPersona").innerHTML = "¡Persona agregada con exito!";//muestra el error
             })
             .catch(function (error) {//si hay error, lo muestra
-                document.querySelector("#pErrorAgregarPersona").innerHTML = error.error;//muestra el error
+                CrearMensaje(error.error)
             })
     }
 }
@@ -495,7 +491,6 @@ function CargarOcupacionesAarray() {
                     ocupacionesArray.push(ocupacion);
                 }
                 CargarOcupacionesFiltro();
-                console.log(ocupacionesArray);
             })
             .catch(function (error) {
                 //document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar
