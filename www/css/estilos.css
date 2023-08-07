@@ -28,6 +28,10 @@ div.centered-content {
     max-width: 400px; /* O cualquier otro valor que desees para el ancho máximo del input */
     margin: 0 auto; /* Para centrar el input horizontalmente dentro del contenedor */
 }
+.input-styleFiltro{
+    max-width: 400px; /* O cualquier otro valor que desees para el ancho máximo del input */
+    margin: 0 auto; /* Para centrar el input horizontalmente dentro del contenedor */
+}
 #mapaInput{
     display:flex;
     justify-content: center;

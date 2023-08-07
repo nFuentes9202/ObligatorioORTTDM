@@ -71,28 +71,34 @@ function EventListeners() {
     document.querySelector("#fechaNacPersonaAgregar").addEventListener("ionChange", CargarOcupacionesSlc);
     document.querySelector("#btnAgregarPersonaAPI").addEventListener("click", CrearPersonaAgregar);
     document.querySelector("#btnVistaPersonas").addEventListener("click", ListarPersonas);
+    document.querySelector("#verPersonas ion-segment").addEventListener("ionChange", CambiarDivs);
+    document.querySelector("#btnFiltrarPersonas").addEventListener("click", FiltrarPorOcupacion);
     document.querySelector("#btnLogout").addEventListener("click", CerrarSesion);
     document.querySelector("#btnCenso").addEventListener("click", BuscarCoordenadasPersonasCensadas);
     ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
 }
+
 function mostrarPagina(evento) {
     OcultarPaginas();
     if (evento.detail.to == "/") {
         pagLogin.style.display = "block";
     } else if (evento.detail.to == "/login") {
         pagLogin.style.display = "block";
-
+        //LimpiarCamposLogin();
     } else if (evento.detail.to == "/registro") {
         pagRegistro.style.display = "block";
         LimpiarCamposRegistro();
     } else if (evento.detail.to == "/agregarPersona") {
         CargarDepartamentosSlc();
         pagAddPersona.style.display = "block";
-
     } else if (evento.detail.to == "/verPersonas") {
         CargarOcupacionesAarray();
+        CargarOcupacionesFiltro();
         pagListado.style.display = "block";
-
+        const divVerPersonas = document.getElementById('divVerPersonas');
+        const divFiltroVerPersonas = document.getElementById('divFiltroVerPersonas');
+        divVerPersonas.style.display = 'block';
+        divFiltroVerPersonas.style.display = 'none';
     } else if (evento.detail.to == "/censadosTotales") {
         MostrarCensados();
         pagCensadosTotales.style.display = "block";
@@ -108,88 +114,21 @@ function OcultarPaginas() {
         paginas[i].style.display = "none";
     }
 }
-/*EventListeners();
-SetVariablesGlobales();
-let hayUsuarioLogueado = false;
-function SetVariablesGlobales() {
-    //pagHome = document.querySelector("#home");
-    pagLogin = document.querySelector("#login");
-    pagRegistro = document.querySelector("#registro");
-    pagAddPersona = document.querySelector("#agregarPersona");
-    pagListado = document.querySelector("#verPersonas");
-    pagCensadosTotales = document.querySelector("#censadosTotales");
-    pagMapa = document.querySelector("#verMapa");
-    inicializar();//inicializa la pagina
-    const ruteo = document.querySelector("#ruteo");
-}
-/*SECCION INICIALIZAR
-function EventListeners() {
-    document.querySelector("#btnRegistrar").addEventListener("click", RegistroUsuario);
-    document.querySelector("#btnLogin").addEventListener("click", LoguearUsuario);
-    document.querySelector("#btnRedirectReg").addEventListener("click", RedirectLogin);
-    ruteo.addEventListener("ionRouteWillChange", mostrarPagina);//muestra la pagina a la que se dirige
-}
 
-function CerrarMenu() {
-    menu.close();
-}
-function inicializar() {
-    Inicio(true);
-}
-function Inicio(showbuttons) {
-    mostrarPagina();
-    OcultarBotones(showbuttons);
-}
+function CambiarDivs(event) {
+    const value = event.detail.value;
+    const divVerPersonas = document.getElementById('divVerPersonas');
+    const divFiltroVerPersonas = document.getElementById('divFiltroVerPersonas');
 
-function mostrarPagina(evento) {
-    //console.log(evento.detail.to.toString());//muestra la pagina a la que se dirige el to esta bien pero el from es null
-    OcultarPaginas();
-    if (evento.detail.to == "/") {
-        pagLogin.style.display = "block";
-    } else if (evento.detail.to == "/login") {
-        pagLogin.style.display = "block";
-
-    } else if (evento.detail.to == "/registro") {
-        pagRegistro.style.display = "block";
-
-    } else if (evento.detail.to == "/agregarPersona") {
-        pagAddPersona.style.display = "block";
-
-    } else if (evento.detail.to == "/verPersonas") {
-        pagListado.style.display = "block";
-
-    } else if (evento.detail.to == "/censadosTotales") {
-        pagCensadosTotales.style.display = "block";
-
-    } else if (evento.detail.to == "/verMapa") {
-        pagMapa.style.display = "block";
+    if (value === 'todos') {
+        divVerPersonas.style.display = 'block';
+        divFiltroVerPersonas.style.display = 'none';
+    } else if (value === 'filtrados') {
+        divVerPersonas.style.display = 'none';
+        divFiltroVerPersonas.style.display = 'block';
+        //CargarOcupacionesFiltro();
     }
 }
-function OcultarPaginas() {
-    let paginas = document.querySelectorAll("ion-page");
-    for (let i = 0; i < paginas.length; i++) {
-        paginas[i].style.display = "none";
-    }
-}
-function OcultarBotones(showbuttons) {
-    if (showbuttons) {//si no hay logueado
-        document.querySelector("#btnLogin").style.display = "inline";
-        document.querySelector("#btnRegistro").style.display = "inline";
-        document.querySelector("#btnAgregarPersona").style.display = "none";
-        document.querySelector("#btnVistaPersonas").style.display = "none";
-        document.querySelector("#btnCensadosTotales").style.display = "none";
-        document.querySelector("#btnVerMapa").style.display = "none";
-        document.querySelector("#btnLogout").style.display = "none";
-    } else {//si hay logueado
-        document.querySelector("#btnLogin").style.display = "none";
-        document.querySelector("#btnRegistro").style.display = "none";
-        document.querySelector("#btnAgregarPersona").style.display = "block";
-        document.querySelector("#btnVistaPersonas").style.display = "block";
-        document.querySelector("#btnCensadosTotales").style.display = "block";
-        document.querySelector("#btnVerMapa").style.display = "block";
-        document.querySelector("#btnLogout").style.display = "block";
-    }
-}*/
 
 /*SECCION REGISTRO LOGIN Y LOGOUT*/
 function LoguearUsuario() {
@@ -353,6 +292,10 @@ function LimpiarCamposRegistro() {
     document.querySelector("#txtUsuarioRegistro").value = "";
     document.querySelector("#txtPasswordRegistro").value = "";
 }
+/*function LimpiarCamposLogin() {
+    document.querySelector("#txtUsuarioLogin").value = "";
+    document.querySelector("#txtPasswordLogin").value = "";
+}*/
 
 /*SECCION AGREGAR PERSONA*/
 function CargarDepartamentosSlc() {
@@ -546,7 +489,7 @@ function CargarOcupacionesAarray() {
             .then(function (datosRespuesta) {
                 /*ocupacionesArray = datosRespuesta;
                 console.log(ocupacionesArray);*/
-                for(let i=0; i<datosRespuesta.ocupaciones.length; i++){
+                for (let i = 0; i < datosRespuesta.ocupaciones.length; i++) {
                     const ocupacionData = datosRespuesta.ocupaciones[i];
                     const ocupacion = new Ocupacion(ocupacionData.id, ocupacionData.ocupacion);
                     ocupacionesArray.push(ocupacion);
@@ -558,7 +501,6 @@ function CargarOcupacionesAarray() {
             })
     }
 }
-
 function ListarPersonas() {
     console.log(localStorage.getItem("apiKey"));
     if (localStorage.getItem("apiKey") != null) {
@@ -593,8 +535,8 @@ function ListarPersonas() {
                     data += `<p>Nombre: ${datosRespuesta.personas[i].nombre}</p>`;
                     data += `<p>Fecha de nacimiento: ${datosRespuesta.personas[i].fechaNacimiento}</p>`;
                     let nombreOcupacion = "";
-                    for(let j=0; j<ocupacionesArray.length; j++){
-                        if(datosRespuesta.personas[i].ocupacion == ocupacionesArray[j].idOcupacion){
+                    for (let j = 0; j < ocupacionesArray.length; j++) {
+                        if (datosRespuesta.personas[i].ocupacion == ocupacionesArray[j].idOcupacion) {
                             nombreOcupacion = ocupacionesArray[j].nombre;
                         }
                     }
@@ -610,60 +552,6 @@ function ListarPersonas() {
             })
     }
 }
-
-/*function ListarPersonas() {
-    if (localStorage.getItem("apiKey") != null) {
-        console.log(localStorage.getItem("idUsuario"));
-        const idUsuario = localStorage.getItem("idUsuario");
-        fetch(`https://censo.develotion.com/ocupaciones.php`)
-        .then(response => response.json())
-        .then(ocupacionesRespuesta => {
-            fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
-                method: "GET",
-                headers: {
-                    "Content-type": "application/json",
-                    "apikey": localStorage.getItem("apiKey"),
-                    "iduser": localStorage.getItem("idUsuario"),
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else if (response.status == 401) {
-                    alert("Es necesario volver a loguearse");
-                    ruteo.push("/");
-                } else {
-                    return Promise.reject(response);
-                }
-            })
-            .then(datosRespuesta => {
-                let data = "";
-                for (let i = 0; i < datosRespuesta.personas.length; i++) {
-                    const persona = datosRespuesta.personas[i];
-                    const ocupacion = ocupacionesRespuesta.find(oc => oc.id === persona.ocupacion);
-                    const nombreOcupacion = ocupacion ? ocupacion.nombre : 'Ocupación desconocida';
-
-                    data += `<ion-card>`;
-                    data += `<ion-card-header><ion-card-title>${persona.nombre}</ion-card-title></ion-card-header>`;
-                    data += `<ion-card-content>`;
-                    data += `<p>Nombre: ${persona.nombre}</p>`;
-                    data += `<p>Fecha de nacimiento: ${persona.fechaNacimiento}</p>`;
-                    data += `<p>Ocupación: ${nombreOcupacion}</p>`;
-                    data += `<ion-button fill="clear" onclick="EliminarDatos('${persona._id}')">Eliminar</ion-button>`;
-                    data += `</ion-card-content></ion-card>`;
-                }
-                document.querySelector("#divVerPersonas").innerHTML = data;
-            })
-            .catch(error => {
-                console.error("Error al obtener datos de personas:", error);
-            });
-        })
-        .catch(error => {
-            console.error("Error al obtener datos de ocupaciones:", error);
-        });
-    }
-}*/
-
 function EliminarDatos(idPersona) {
     const apiKey = localStorage.getItem("apiKey");
     if (apiKey != null) {
@@ -676,19 +564,83 @@ function EliminarDatos(idPersona) {
                 "iduser": localStorage.getItem("idUsuario"),
             }
         })
-        .then(function (response) {
-            if (response.ok) {
-                // Eliminación exitosa, puedes actualizar la lista de personas si lo deseas
-                ListarPersonas();
-            } else {
-                return Promise.reject(response);
-            }
-        })
-        .catch(function (error) {
-            console.error("Error al eliminar la persona:", error);
-        });
+            .then(function (response) {
+                if (response.ok) {
+                    // Eliminación exitosa, puedes actualizar la lista de personas si lo deseas
+                    ListarPersonas();
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .catch(function (error) {
+                console.error("Error al eliminar la persona:", error);
+            });
     }
 }
+/*SECCION FILTRO X OCUPACION*/
+function CargarOcupacionesFiltro() {
+    let data = "";//crea una variable vacia
+    data += `<option value="0">Seleccione una ocupacion</option>`;//le asigna el valor
+
+    for (let i = 0; i < ocupacionesArray.length; i++) {//recorre el array de ciudades
+
+        data += `<option value="${ocupacionesArray[i].idOcupacion}">${ocupacionesArray[i].nombre}</option>`;//le asigna el nombre de la ocupacion
+    }
+    document.querySelector("#slcFiltroVerPersonas").innerHTML = data;//lo agrega al select
+}
+function FiltrarPorOcupacion() {
+    if (localStorage.getItem("apiKey") != null) {
+        console.log(localStorage.getItem("idUsuario"));
+        const idUsuario = localStorage.getItem("idUsuario");
+        fetch(`https://censo.develotion.com/personas.php?idUsuario=${idUsuario}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json",
+                "apikey": localStorage.getItem("apiKey"),
+                "iduser": localStorage.getItem("idUsuario"),
+            }
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                }
+                else {
+                    return Promise.reject(response);
+                }
+            })
+            .then(function (datosRespuesta) {
+                let data = "";
+                for (let i = 0; i < datosRespuesta.personas.length; i++) {
+                    if (datosRespuesta.personas[i].ocupacion == document.querySelector("#slcFiltroVerPersonas").value) {
+                        data += `<ion-card>`;
+                        data += `<ion-card-header><ion-card-title>${datosRespuesta.personas[i].nombre}</ion-card-title></ion-card-header>`;
+                        data += `<ion-card-content>`;
+                        data += `<p>Nombre: ${datosRespuesta.personas[i].nombre}</p>`;
+                        data += `<p>Fecha de nacimiento: ${datosRespuesta.personas[i].fechaNacimiento}</p>`;
+                        let nombreOcupacion = "";
+                        for (let j = 0; j < ocupacionesArray.length; j++) {
+                            if (datosRespuesta.personas[i].ocupacion == ocupacionesArray[j].idOcupacion) {
+                                nombreOcupacion = ocupacionesArray[j].nombre;
+                            }
+                        }
+                        data += `<p>Ocupación: ${nombreOcupacion}</p>`;
+                        data += `<ion-button fill="clear" onclick=EliminarDatos(${datosRespuesta.personas[i].id})>Eliminar</ion-button>`;
+                        console.log(datosRespuesta.personas[i]._id);
+                        data += `</ion-card-content></ion-card>`;
+                    }
+                }
+                document.querySelector("#pFiltroVerPersonas").innerHTML = data;
+            })
+            .catch(function (error) {
+                document.querySelector("#content-personas").innerHTML = error.error;
+            })
+    }
+}
+/*SECCION CENSADOS TOTALES*/
 function MostrarCensados() {
     if (localStorage.getItem("apiKey") != null) {
         let idUsuario = localStorage.getItem("idUsuario");
@@ -728,7 +680,6 @@ function MostrarCensados() {
             })
     }
 }
-
 /*VER MAPA*/
 function MostrarMapa() {
     if (mapa != null) {
@@ -792,7 +743,7 @@ function BuscarCoordenadasPersonasCensadas() {
                                         let distancia = mapa.distance([latitudOrigen, longitudOrigen], [ciudad.latitud, ciudad.longitud]).toFixed(2);
                                         if (distancia <= km) {
                                             L.marker([ciudad.latitud, ciudad.longitud],).bindPopup(`${ciudad.nombre}`).addTo(mapa)
-                                            
+
                                             CrearMensaje("Se ha añadido un punto nuevo")
                                         };
                                     }

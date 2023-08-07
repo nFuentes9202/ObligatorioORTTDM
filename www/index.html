@@ -185,14 +185,35 @@
                     </ion-buttons>
                     <h2>Personas censadas</h2>
                 </ion-toolbar>
+
+                <ion-segment value="default" color="tertiary">
+
+                    <ion-segment-button value="todos">
+                      <ion-label>Todos</ion-label>
+                    </ion-segment-button>
+
+                    <ion-segment-button value="filtrados">
+                      <ion-label>Filtrar</ion-label>
+                    </ion-segment-button>   
+
+                </ion-segment>
             </ion-header>
             <ion-content id="content-personas" class="content-center">
+
+                <div id="divVerPersonas" class="centered-content"></div>
+
                 <div id="divFiltroVerPersonas" class="centered-content">
-
+                    <h2>FILTRAR</h2>
+                    <ion-list class="input-styleFiltro">
+                        <ion-item>
+                            <select id="slcFiltroVerPersonas">
+                            </select>
+                        </ion-item>
+                    </ion-list>
+                    <ion-button id="btnFiltrarPersonas">Filtrar</ion-button>
+                    <p id="pFiltroVerPersonas"></p>
                 </div>
-                <div id="divVerPersonas" class="centered-content">
 
-                </div>
             </ion-content>
         </ion-page>
 
