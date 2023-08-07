@@ -93,7 +93,7 @@ function mostrarPagina(evento) {
         pagAddPersona.style.display = "block";
     } else if (evento.detail.to == "/verPersonas") {
         CargarOcupacionesAarray();
-        CargarOcupacionesFiltro();
+        
         pagListado.style.display = "block";
         const divVerPersonas = document.getElementById('divVerPersonas');
         const divFiltroVerPersonas = document.getElementById('divFiltroVerPersonas');
@@ -494,6 +494,7 @@ function CargarOcupacionesAarray() {
                     const ocupacion = new Ocupacion(ocupacionData.id, ocupacionData.ocupacion);
                     ocupacionesArray.push(ocupacion);
                 }
+                CargarOcupacionesFiltro();
                 console.log(ocupacionesArray);
             })
             .catch(function (error) {
