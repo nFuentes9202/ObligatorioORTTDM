@@ -406,16 +406,35 @@ function CargarOcupacionesSlc() {
     }
 }
 function CrearPersonaAgregar() {
-    let idUsuario = localStorage.getItem("idUsuario");
+    try {
+        let idUsuario = localStorage.getItem("idUsuario");
 
     let nombre = document.querySelector("#nombrePersonaAgregar").value;
     let departamento = document.querySelector("#slcDepartamentoAgregarPersona").value;
     let ciudad = document.querySelector("#slcCiudadAgregarPersona").value;
     let fechaNacimiento = document.querySelector("#fechaNacPersonaAgregar").value;
     let ocupacion = document.querySelector("#slcOcupacionAgregarPersona").value;;
-
+        if(nombre.trim().length == 0){
+            throw new Error("El nombre no puede ser vacío")
+        }
+        if(departamento == "0"){
+            throw new Error("Seleccione un departamento por favor")
+        }
+        if(ciudad == "0"){
+            throw new Error("Seleccione una ciudad por favor")
+        }
+        if(fechaNacimiento == undefined){
+            throw new Error("Seleccione una fecha de nacimiento por favor")
+        }
+        if(ocupacion == 0){
+            throw new Error("Seleccione una ocupación por favor")
+        }
     let datosPersona = new Persona(idUsuario, nombre, departamento, ciudad, fechaNacimiento, ocupacion);
     AgregarPersonaAPI(datosPersona);
+    } catch (error) {
+        CrearMensaje(error.message)
+    }
+    
 }
 function AgregarPersonaAPI(datosPersona) {
     if (localStorage.getItem("apiKey") != null) {
@@ -442,7 +461,7 @@ function AgregarPersonaAPI(datosPersona) {
                 }
             })
             .then(function (datosPersona) {
-                document.querySelector("#pErrorAgregarPersona").innerHTML = "¡Persona agregada con exito!";
+                CrearMensaje("¡Persona agregada con exito!")
             })
             .catch(function (error) {//si hay error, lo muestra
                 CrearMensaje(error.error)
