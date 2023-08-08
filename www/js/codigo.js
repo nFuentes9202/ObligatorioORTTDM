@@ -155,7 +155,7 @@ function LoguearUsuario() {
                 if (data.codigo != 200) {
                     throw new Error(`${data.mensaje}`)
                 }
-                document.querySelector("#txtLogin").innerHTML = "Login exitoso";
+                CrearMensaje("Login exitoso")
                 hayUsuarioLogueado = true;
                 localStorage.setItem("apiKey", data.apiKey);
                 localStorage.setItem("idUsuario", data.id);
@@ -165,16 +165,16 @@ function LoguearUsuario() {
             })
             .catch((error) => {
                 error.json().then((data) => {
-                    document.querySelector("#txtLogin").innerHTML = data.mensaje;
+                    CrearMensaje(data.mensaje)
                 });
             })
             .then(datosError => {
                 if (datosError != undefined) {
-                    CrearMensaje(datosError.error);
+                    CrearMensaje(datosError.error.message);
                 }
             })
     } catch (error) {
-        document.querySelector("#txtLogin").innerHTML = error.message;
+        CrearMensaje(error.message)
     }
 }
 function LoguearUsuarioAlRegistrarse(usuario, password) {
@@ -615,6 +615,9 @@ function FiltrarPorOcupacion() {
             })
             .then(function (datosRespuesta) {
                 let data = "";
+                if(document.querySelector("#slcFiltroVerPersonas").value == 0){
+                    throw new Error("Seleccione una ocupación")
+                }
                 for (let i = 0; i < datosRespuesta.personas.length; i++) {
                     if (datosRespuesta.personas[i].ocupacion == document.querySelector("#slcFiltroVerPersonas").value) {
                         data += `<ion-card>`;
@@ -637,7 +640,7 @@ function FiltrarPorOcupacion() {
                 document.querySelector("#pFiltroVerPersonas").innerHTML = data;
             })
             .catch(function (error) {
-                document.querySelector("#content-personas").innerHTML = error.error;
+                CrearMensaje(error.message)
             })
     }
 }
@@ -675,9 +678,9 @@ function MostrarCensados() {
                         contadorInterior++
                     }
                 }
-                document.querySelector("#txtCensadosInterior").innerHTML = `El total de personas censadas en el interior es de ${contadorInterior} personas.`;
-                document.querySelector("#txtCensadosMontevideo").innerHTML = `El total de personas censadas en Montevideo es de ${contadorMontevideo} personas.`;
-                document.querySelector("#txtCensadosTotales").innerHTML = `El total de personas censadas es de ${contadorMontevideo + contadorInterior} personas.`;
+                document.querySelector("#txtCensadosInterior").innerHTML = `Interior: ${contadorInterior} personas.`;
+                document.querySelector("#txtCensadosMontevideo").innerHTML = `Montevideo: ${contadorMontevideo} personas.`;
+                document.querySelector("#txtCensadosTotales").innerHTML = `Total: ${contadorMontevideo + contadorInterior} personas.`;
             })
     }
 }
