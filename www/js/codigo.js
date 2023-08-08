@@ -84,7 +84,6 @@ function mostrarPagina(evento) {
         pagLogin.style.display = "block";
     } else if (evento.detail.to == "/login") {
         pagLogin.style.display = "block";
-        //LimpiarCamposLogin();
     } else if (evento.detail.to == "/registro") {
         pagRegistro.style.display = "block";
         LimpiarCamposRegistro();
@@ -93,7 +92,6 @@ function mostrarPagina(evento) {
         pagAddPersona.style.display = "block";
     } else if (evento.detail.to == "/verPersonas") {
         CargarOcupacionesAarray();
-        
         pagListado.style.display = "block";
         const divVerPersonas = document.getElementById('divVerPersonas');
         const divFiltroVerPersonas = document.getElementById('divFiltroVerPersonas');
@@ -102,7 +100,6 @@ function mostrarPagina(evento) {
     } else if (evento.detail.to == "/censadosTotales") {
         MostrarCensados();
         pagCensadosTotales.style.display = "block";
-
     } else if (evento.detail.to == "/verMapa") {
         MostrarMapa();
         pagMapa.style.display = "block";
@@ -114,19 +111,16 @@ function OcultarPaginas() {
         paginas[i].style.display = "none";
     }
 }
-
 function CambiarDivs(event) {
     const value = event.detail.value;
     const divVerPersonas = document.getElementById('divVerPersonas');
     const divFiltroVerPersonas = document.getElementById('divFiltroVerPersonas');
-
     if (value === 'todos') {
         divVerPersonas.style.display = 'block';
         divFiltroVerPersonas.style.display = 'none';
     } else if (value === 'filtrados') {
         divVerPersonas.style.display = 'none';
         divFiltroVerPersonas.style.display = 'block';
-        //CargarOcupacionesFiltro();
     }
 }
 
@@ -249,43 +243,42 @@ function CerrarSesion() {
 function RedirectARegistro() {
     document.querySelector("#ruteo").push("/registro");
 }
-function RegistroUsuario() {//registra un usuario
-    let nombre = document.querySelector("#txtUsuarioRegistro").value.trim();//trim saca los espacios en blanco
-    let password = document.querySelector("#txtPasswordRegistro").value.trim();//trim saca los espacios en blanco
-    document.querySelector("#txtRegistro").innerHTML = "";//limpia el mensaje de error
-    try {//valida los datos
-        if (nombre.length == 0 || password.length == 0) {//si no ingreso datos
-            throw new Error("Ingrese datos válidos");//lanza el error
+function RegistroUsuario() {
+    let nombre = document.querySelector("#txtUsuarioRegistro").value.trim();
+    let password = document.querySelector("#txtPasswordRegistro").value.trim();
+    document.querySelector("#txtRegistro").innerHTML = "";
+    try {
+        if (nombre.length == 0 || password.length == 0) {
+            throw new Error("Ingrese datos válidos");
         }
-        datosUsuario = {//crea el objeto
-            usuario: nombre,//le asigna los valores
-            password: password//le asigna los valores
+        datosUsuario = {
+            usuario: nombre,
+            password: password
         }
         fetch("https://censo.develotion.com/usuarios.php",
-            {//hace el fetch
-                method: "POST",//metodo post
-                headers: {//le asigna los headers
-                    "Content-Type": "application/json",//le asigna el tipo de contenido
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify(datosUsuario)//le asigna el body
+                body: JSON.stringify(datosUsuario)
             })
             .then(response => {
-                if (response.ok) {//si la respuesta es ok
-                    CrearMensaje("Se ha registrado exitosamente");//muestra el mensaje
+                if (response.ok) {
+                    CrearMensaje("Se ha registrado exitosamente");
                     LoguearUsuarioAlRegistrarse(nombre, password);
-                    return response.json();//devuelve la respuesta
-                    //return LimpiarCamposRegistro();//limpia los campos
-                } else {//si no es ok
-                    return Promise.reject(response);//devuelve el error
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
                 }
             })
-            .then((data) => {//segun la respuesta
+            .then((data) => {
             })
-            .catch((error) => {//si hay error
+            .catch((error) => {
                 CrearMensaje(error.message);
             });
-    } catch (error) {//si hay error
-        CrearMensaje(error.message)//muestra el mensaje
+    } catch (error) {
+        CrearMensaje(error.message)
     }
 }
 function LimpiarCamposRegistro() {
@@ -307,23 +300,23 @@ function CargarDepartamentosSlc() {
                 "iduser": idUsuario
             }
         })
-            .then(function (response) {//response es la respuesta del servidor
-                if (response.ok) {//si la respuesta es correcta
-                    return response.json();//retorna la respuesta en formato json
-                } else if (response.status == 401) {//si la respuesta es incorrecta
-                    alert("Es necesario volver a loguearse");//tira un alert
-                    ruteo.push("/");//redirecciona al home
-                } else {//si la respuesta es incorrecta
-                    return Promise.reject(response);//tira el error
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                } else {
+                    return Promise.reject(response);
                 }
             })
             .then(function (datosRespuesta) {
-                let data = "";//crea una variable vacia
-                data += `<option value="0">Seleccione un departamento</option>`;//le asigna el valor
-                for (let i = 0; i < datosRespuesta.departamentos.length; i++) {//recorre el array de departamentos
-                    data += `<option value="${datosRespuesta.departamentos[i].id}">${datosRespuesta.departamentos[i].nombre}</option>`;//le asigna el nombre del departamento
+                let data = "";
+                data += `<option value="0">Seleccione un departamento</option>`;
+                for (let i = 0; i < datosRespuesta.departamentos.length; i++) {
+                    data += `<option value="${datosRespuesta.departamentos[i].id}">${datosRespuesta.departamentos[i].nombre}</option>`;
                 }
-                document.querySelector("#slcDepartamentoAgregarPersona").innerHTML = data;//lo agrega al select
+                document.querySelector("#slcDepartamentoAgregarPersona").innerHTML = data;
             })
             .catch(function (error) {//si hay error, lo muestra
                 CrearMensaje(error.error)
@@ -339,27 +332,27 @@ function CargarCiudadesSlc() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "apikey": apiKey,//le asigna el apikey
-                "iduser": idUsuario//le asigna el id del usuario
+                "apikey": apiKey,
+                "iduser": idUsuario
             }
         })
-            .then(function (response) {//response es la respuesta del servidor
-                if (response.ok) {//si la respuesta es correcta
-                    return response.json();//retorna la respuesta en formato json
-                } else if (response.status == 401) {//si la respuesta es incorrecta
-                    alert("Es necesario volver a loguearse");//tira un alert
-                    ruteo.push("/");//redirecciona al home
-                } else {//si la respuesta es incorrecta
-                    return Promise.reject(response);//tira el error
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                } else {
+                    return Promise.reject(response);
                 }
             })
             .then(function (datosRespuesta) {
-                let data = "";//crea una variable vacia
-                data += `<option value="0">Seleccione una ciudad</option>`;//le asigna el valor
-                for (let i = 0; i < datosRespuesta.ciudades.length; i++) {//recorre el array de ciudades
-                    data += `<option value="${datosRespuesta.ciudades[i].id}">${datosRespuesta.ciudades[i].nombre}</option>`;//le asigna el nombre de la ciudad
+                let data = "";
+                data += `<option value="0">Seleccione una ciudad</option>`;
+                for (let i = 0; i < datosRespuesta.ciudades.length; i++) {
+                    data += `<option value="${datosRespuesta.ciudades[i].id}">${datosRespuesta.ciudades[i].nombre}</option>`;
                 }
-                document.querySelector("#slcCiudadAgregarPersona").innerHTML = data;//lo agrega al select
+                document.querySelector("#slcCiudadAgregarPersona").innerHTML = data;
             })
             .catch(function (error) {//si hay error, lo muestra
                 CrearMensaje(error.error)
@@ -372,40 +365,40 @@ function CargarOcupacionesSlc() {
         const idUsuario = localStorage.getItem("idUsuario");
         const fechaNac = document.querySelector("#fechaNacPersonaAgregar").value;
 
-        const currentDate = new Date();//toma la fecha actual
-        const fechaNacimiento = new Date(fechaNac);//toma la fecha de nacimiento
-        const edad = currentDate.getFullYear() - fechaNacimiento.getFullYear();//calcula la edad
+        const currentDate = new Date();
+        const fechaNacimiento = new Date(fechaNac);
+        const edad = currentDate.getFullYear() - fechaNacimiento.getFullYear();
 
         fetch("https://censo.develotion.com/ocupaciones.php", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "apikey": apiKey,//le asigna el apikey
-                "iduser": idUsuario//le asigna el id del usuario
+                "apikey": apiKey,
+                "iduser": idUsuario
             }
         })
-            .then(function (response) {//response es la respuesta del servidor
-                if (response.ok) {//si la respuesta es correcta
-                    return response.json();//retorna la respuesta en formato json
-                } else if (response.status == 401) {//si la respuesta es incorrecta
-                    alert("Es necesario volver a loguearse");//tira un alert
-                    ruteo.push("/");//redirecciona al home
-                } else {//si la respuesta es incorrecta
-                    return Promise.reject(response);//tira el error
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                } else {
+                    return Promise.reject(response);
                 }
             })
             .then(function (datosRespuesta) {
-                let data = "";//crea una variable vacia
-                data += `<option value="0">Seleccione una ocupacion</option>`;//le asigna el valor
+                let data = "";
+                data += `<option value="0">Seleccione una ocupacion</option>`;
 
-                for (let i = 0; i < datosRespuesta.ocupaciones.length; i++) {//recorre el array de ciudades
-                    if (edad < 18 && datosRespuesta.ocupaciones[i].id == 5) {//si es menor de edad y la ocupacion es estudiante
-                        data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;//le asigna el nombre de la ocupacion
+                for (let i = 0; i < datosRespuesta.ocupaciones.length; i++) {
+                    if (edad < 18 && datosRespuesta.ocupaciones[i].id == 5) {
+                        data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;
                     } else if (edad >= 18) {
-                        data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;//le asigna el nombre de la ocupacion
+                        data += `<option value="${datosRespuesta.ocupaciones[i].id}">${datosRespuesta.ocupaciones[i].ocupacion}</option>`;
                     }
                 }
-                document.querySelector("#slcOcupacionAgregarPersona").innerHTML = data;//lo agrega al select
+                document.querySelector("#slcOcupacionAgregarPersona").innerHTML = data;
             })
             .catch(function (error) {//si hay error, lo muestra
                 CrearMensaje(error.error)
@@ -415,14 +408,14 @@ function CargarOcupacionesSlc() {
 function CrearPersonaAgregar() {
     let idUsuario = localStorage.getItem("idUsuario");
 
-    let nombre = document.querySelector("#nombrePersonaAgregar").value;//toma el valor del input
-    let departamento = document.querySelector("#slcDepartamentoAgregarPersona").value;//toma el valor del input
-    let ciudad = document.querySelector("#slcCiudadAgregarPersona").value;//toma el valor del input
-    let fechaNacimiento = document.querySelector("#fechaNacPersonaAgregar").value;//toma el valor del input
-    let ocupacion = document.querySelector("#slcOcupacionAgregarPersona").value;;//toma el valor del select
+    let nombre = document.querySelector("#nombrePersonaAgregar").value;
+    let departamento = document.querySelector("#slcDepartamentoAgregarPersona").value;
+    let ciudad = document.querySelector("#slcCiudadAgregarPersona").value;
+    let fechaNacimiento = document.querySelector("#fechaNacPersonaAgregar").value;
+    let ocupacion = document.querySelector("#slcOcupacionAgregarPersona").value;;
 
-    let datosPersona = new Persona(idUsuario, nombre, departamento, ciudad, fechaNacimiento, ocupacion);//crea un objeto persona
-    AgregarPersonaAPI(datosPersona);//lo agrega a la api
+    let datosPersona = new Persona(idUsuario, nombre, departamento, ciudad, fechaNacimiento, ocupacion);
+    AgregarPersonaAPI(datosPersona);
 }
 function AgregarPersonaAPI(datosPersona) {
     if (localStorage.getItem("apiKey") != null) {
@@ -438,18 +431,18 @@ function AgregarPersonaAPI(datosPersona) {
             },
             body: JSON.stringify(datosPersona)
         })
-            .then(function (response) {//response es la respuesta del servidor
-                if (response.ok) {//si la respuesta es correcta
-                    return response.json();//retorna la respuesta en formato json
-                } else if (response.status == 401) {//si la respuesta es incorrecta
-                    alert("Es necesario volver a loguearse");//tira un alert
-                    ruteo.push("/");//redirecciona al home
-                } else {//si la respuesta es incorrecta
-                    return Promise.reject(response);//tira el error
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status == 401) {
+                    alert("Es necesario volver a loguearse");
+                    ruteo.push("/");
+                } else {
+                    return Promise.reject(response);
                 }
             })
             .then(function (datosPersona) {
-                document.querySelector("#pErrorAgregarPersona").innerHTML = "¡Persona agregada con exito!";//muestra el error
+                document.querySelector("#pErrorAgregarPersona").innerHTML = "¡Persona agregada con exito!";
             })
             .catch(function (error) {//si hay error, lo muestra
                 CrearMensaje(error.error)
@@ -460,8 +453,6 @@ function AgregarPersonaAPI(datosPersona) {
 /*SECCION VER PERSONAS*/
 function CargarOcupacionesAarray() {
     if (localStorage.getItem("apiKey") != null) {
-        //console.log(localStorage.getItem("idUsuario"));
-        //const idUsuario = localStorage.getItem("idUsuario");
         fetch(`https://censo.develotion.com/ocupaciones.php`, {
             method: "GET",
             headers: {
@@ -483,8 +474,6 @@ function CargarOcupacionesAarray() {
                 }
             })
             .then(function (datosRespuesta) {
-                /*ocupacionesArray = datosRespuesta;
-                console.log(ocupacionesArray);*/
                 for (let i = 0; i < datosRespuesta.ocupaciones.length; i++) {
                     const ocupacionData = datosRespuesta.ocupaciones[i];
                     const ocupacion = new Ocupacion(ocupacionData.id, ocupacionData.ocupacion);
@@ -493,7 +482,6 @@ function CargarOcupacionesAarray() {
                 CargarOcupacionesFiltro();
             })
             .catch(function (error) {
-                //document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar
             })
     }
 }
@@ -544,14 +532,13 @@ function ListarPersonas() {
                 document.querySelector("#divVerPersonas").innerHTML = data;
             })
             .catch(function (error) {
-                document.querySelector("#content-personas").innerHTML = error.error;//tira undefined revisar
+                document.querySelector("#content-personas").innerHTML = error.error;
             })
     }
 }
 function EliminarDatos(idPersona) {
     const apiKey = localStorage.getItem("apiKey");
     if (apiKey != null) {
-        // Realizar la solicitud para eliminar la persona con el _id especificado
         fetch(`https://censo.develotion.com/personas.php?idCenso=${idPersona}`, {
             method: "DELETE",
             headers: {
@@ -562,7 +549,6 @@ function EliminarDatos(idPersona) {
         })
             .then(function (response) {
                 if (response.ok) {
-                    // Eliminación exitosa, puedes actualizar la lista de personas si lo deseas
                     ListarPersonas();
                 } else {
                     return Promise.reject(response);
@@ -575,14 +561,14 @@ function EliminarDatos(idPersona) {
 }
 /*SECCION FILTRO X OCUPACION*/
 function CargarOcupacionesFiltro() {
-    let data = "";//crea una variable vacia
-    data += `<option value="0">Seleccione una ocupacion</option>`;//le asigna el valor
+    let data = "";
+    data += `<option value="0">Seleccione una ocupacion</option>`;
 
-    for (let i = 0; i < ocupacionesArray.length; i++) {//recorre el array de ciudades
+    for (let i = 0; i < ocupacionesArray.length; i++) {
 
-        data += `<option value="${ocupacionesArray[i].idOcupacion}">${ocupacionesArray[i].nombre}</option>`;//le asigna el nombre de la ocupacion
+        data += `<option value="${ocupacionesArray[i].idOcupacion}">${ocupacionesArray[i].nombre}</option>`;
     }
-    document.querySelector("#slcFiltroVerPersonas").innerHTML = data;//lo agrega al select
+    document.querySelector("#slcFiltroVerPersonas").innerHTML = data;
 }
 function FiltrarPorOcupacion() {
     if (localStorage.getItem("apiKey") != null) {
